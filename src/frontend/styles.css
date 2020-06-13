@@ -117,6 +117,11 @@
 
 /* landing page styles */
 
+.project-card-box {
+    width: 200px;
+    height: 300px;
+}
+
 .all-project-cards {
     padding: 5px;
     width: 80%;
@@ -125,7 +130,7 @@
 }
 
 .add-project-box {
-    color: darkblue
+    color: darkblue;
 }
 
 .add-project-card {

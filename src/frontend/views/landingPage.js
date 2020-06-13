@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import {
     CardDeck,
     Card,
@@ -7,6 +8,7 @@ import {
     CardBody,
     Button,
     CardHeader,
+    CardFooter,
 } from "reactstrap";
 
 import "../styles.css";
@@ -38,45 +40,79 @@ class ProjectList extends Component {
 }
 
 class GetProjectCards extends Component {
-    // get all projects associated with a user in JSON form,
-    // currently only returns a single example project in json form
-    getUserProjects(user) {
-        var example_proj =
-            '{ "name" : "example project", ' +
-            ' "description" : "Hello world project", ' +
-            ' "components" : [ ' +
-            '{ "name" : "say hello", "description" : "im lonely", "steps" : [ ' +
-            '{ "name" : "step 1", "description" : "type print(hello)" } ] }, ' +
-            '{ "name" : "say world", "description" : "i want friends", "steps" : [ ' +
-            '{ "name" : "step 1", "description" : "type print(world)" } ] } ] }';
-        return example_proj;
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            projects : {},
+            isLoading : true,
+        };
+        this.refreshProjList = this.refreshProjList.bind(this);
+        this.deleteProject = this.deleteProject.bind(this);
+    }
+
+    callGetProjectAPI() {
+        fetch("http://localhost:9000/getProjects")
+            .then(res => res.json())
+            .then(res => this.setState({ projects : res, isLoading : false }))
+            .catch(err => err);
+    }
+
+    componentDidMount() {
+        this.callGetProjectAPI();
+    }
+
+    refreshProjList(res) {
+        if (res.status === 200) {
+            this.callGetProjectAPI();
+        }
+        else {
+            console.log("error: failed to get projects");
+        }
+    }
+
+    deleteProject(projName) {
+        var body = {name: projName}
+        body["option"] = "DELETE"
+
+        var req = {
+            headers: { 'Content-Type': 'application/json'},
+            method: 'POST',
+            body: JSON.stringify(body)
+        };
+
+        fetch('http://localhost:9000/editProjects', req)
+            .then(res => res.json())
+            .then(res => this.refreshProjList(res));  
     }
 
     // format a single projects json string into proper html/bootstrap card view
-    FormatProjectJSON(props) {
-        var project = JSON.parse(props.json);
-
+    formatProject(project) {
         return (
             <div className="project-card-box">
-                <Card className="project-card">
+                <Card >
                     <CardHeader>
                         <CardTitle>{project["name"]}</CardTitle>
                     </CardHeader>
                     <CardBody>
                         <CardText>{project["description"]}</CardText>
                     </CardBody>
+                    <CardFooter>
+                        <Button onClick={() => this.deleteProject(project["name"])}>Delete</Button>
+                    </CardFooter>
                 </Card>
             </div>
         );
     }
 
     render() {
-        var userProjects = this.getUserProjects(this.props.user);
         return (
             <div className="all-project-cards">
                 <CardDeck>
-                    <this.FormatProjectJSON json={userProjects} />
-                    <AddProjectCard />
+                    {!this.state.isLoading && this.state.projects.projects.map(project => (
+                        <div key={project.name}>{this.formatProject(project)}</div>
+                    ))}
+                    <AddProjectCard onAddProj={this.refreshProjList} />
                 </CardDeck>
             </div>
         );
@@ -102,9 +138,15 @@ class AddProjectCard extends Component {
     handleSubmit(input) {
         var name = input.name;
         var desc = input.desc;
+        var body = { "name" : name, "desc" : desc };
+        body['option'] = 'ADD'
 
         this.toggleAddProj();
-        console.log(name + " " + desc);
+        fetch("http://localhost:9000/editProjects", {
+            headers: { 'Content-Type': 'application/json'},
+            method: 'POST',
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => this.props.onAddProj(res));
     }
 
     // for add project form
