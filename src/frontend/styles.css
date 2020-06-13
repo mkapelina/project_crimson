@@ -2,7 +2,7 @@
   font-family: Roboto, Hevetica, sans-serif;
   background-color: #3A3335;
   color: #C0F8D1;
-}
+
 
 .main-page-top {
   position: relative;
@@ -56,7 +56,7 @@
   position: fixed;
   left: 45%;
   top: 5%;
-  transform: translate(-45%,5%);
+  transform: translate(-45%, 5%);
   border: 2px solid darkgray;
   z-index: 9;
 }
@@ -68,7 +68,7 @@
   background-color: blanchedalmond;
 }
 
-.form-container input[type=text] {
+.form-container input[type="text"] {
   width: 100%;
   padding: 10px;
   margin: 5px 0 22px 0;
@@ -120,4 +120,45 @@
   border-bottom: 1px solid gray;
   font-size: medium;
   color: darkblue;
+}
+
+/* landing page styles */
+
+.project-card-box {
+    width: 200px;
+    height: 300px;
+}
+
+.all-project-cards {
+    padding: 5px;
+    width: 80%;
+    border: 2px solid darkgrey;
+    border-radius: 4px;
+}
+
+.add-project-box {
+    color: darkblue;
+}
+
+.add-project-card {
+    padding: 8px;
+}
+
+.add-project-button {
+    border: none;
+    padding: 16px;
+    font-size: 32px;
+    color: darkblue;
+    background-color: lightgrey;
+    border-radius: 100%;
+    display: block;
+}
+
+.add-project-button:focus {
+    border: none;
+    outline: none;
+}
+
+.add-project-button:active {
+    background-color: darkgray;
 }
