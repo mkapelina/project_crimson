@@ -46,9 +46,11 @@ class GetProjectCards extends Component {
         this.state = {
             projects : {},
             isLoading : true,
+            willDelete : false,
         };
         this.refreshProjList = this.refreshProjList.bind(this);
         this.deleteProject = this.deleteProject.bind(this);
+        this.toggleWillDelete = this.toggleWillDelete.bind(this);
     }
 
     callGetProjectAPI() {
@@ -71,6 +73,10 @@ class GetProjectCards extends Component {
         }
     }
 
+    toggleWillDelete() {
+        this.setState({ willDelete : !this.state.willDelete });
+    }
+
     deleteProject(projName) {
         var body = {name: projName}
         body["option"] = "DELETE"
@@ -83,14 +89,14 @@ class GetProjectCards extends Component {
 
         fetch('http://localhost:9000/editProjects', req)
             .then(res => res.json())
-            .then(res => this.refreshProjList(res));  
+            .then(res => this.refreshProjList(res));
     }
 
     // format a single projects json string into proper html/bootstrap card view
     formatProject(project) {
         return (
             <div className="project-card-box">
-                <Card >
+                <Card>
                     <CardHeader>
                         <CardTitle>{project["name"]}</CardTitle>
                     </CardHeader>
@@ -98,9 +104,13 @@ class GetProjectCards extends Component {
                         <CardText>{project["description"]}</CardText>
                     </CardBody>
                     <CardFooter>
-                        <Button onClick={() => this.deleteProject(project["name"])}>Delete</Button>
+                        <Button onClick={this.toggleWillDelete}>Delete</Button>
                     </CardFooter>
                 </Card>
+                {this.state.willDelete && <DeleteProjectConfirm
+                    project={project["name"]}
+                    onNo={this.toggleWillDelete} 
+                    onYes={() => this.deleteProject(project["name"])} />}
             </div>
         );
     }
@@ -110,12 +120,27 @@ class GetProjectCards extends Component {
             <div className="all-project-cards">
                 <CardDeck>
                     {!this.state.isLoading && this.state.projects.projects.map(project => (
-                        <div key={project.name}>{this.formatProject(project)}</div>
-                    ))}
-                    <AddProjectCard onAddProj={this.refreshProjList} />
+                        <div key={project.name}>{this.formatProject(project)}</div>))
+                    }
+                    {!this.state.isLoading && <AddProjectCard 
+                        onAddProj={this.refreshProjList} 
+                        projNames={this.state.projects.projects.map(project => project.name)} />
+                    }
                 </CardDeck>
             </div>
         );
+    }
+}
+
+class DeleteProjectConfirm extends Component {
+    render() {
+        return (
+            <div className='delete-project-popup'>
+                <p>Are you sure you want to delete {this.props.project}?</p>
+                <button onClick={this.props.onNo}>No</button>
+                <button onClick={this.props.onYes}>Yes</button>
+            </div>
+        )
     }
 }
 
@@ -162,7 +187,9 @@ class AddProjectCard extends Component {
                         +
                     </button>
                     {this.state.showAddProj && (<AddProjectForm
-                        onSubmit={this.handleSubmit} onCancel={this.handleCancel} />)}
+                        onSubmit={this.handleSubmit} 
+                        onCancel={this.handleCancel} 
+                        projNames={this.props.projNames}/>)}
                     <CardText>Add Project</CardText>
                 </Card>
             </div>
@@ -176,6 +203,7 @@ class AddProjectForm extends Component {
         this.state = {
             name: "",
             desc: "",
+            isValid: true,
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -193,13 +221,17 @@ class AddProjectForm extends Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        this.props.onSubmit(this.state);
+        if (this.props.projNames.includes(this.state.name)) {
+            this.setState({ isValid : false });
+        } else {
+            this.props.onSubmit(this.state);
+        }
     }
 
     render() {
         return (
             <div className="addProj-popup">
-                <div className="form-popup" id="popup-form">
+                <div className="form-popup">
                     <form className="form-container" onSubmit={this.handleSubmit}>
                         <p>Please enter the details for your new Project</p>
                         <label>Project name:</label>
@@ -209,6 +241,7 @@ class AddProjectForm extends Component {
                             onChange={this.handleNameChange}
                             required
                         />
+                        {!this.state.isValid && <p>You cannot have two projects with the same name</p>}
                         <label>Project description:</label>
                         <input
                             type="text"

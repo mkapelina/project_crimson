@@ -125,40 +125,51 @@
 /* landing page styles */
 
 .project-card-box {
-    width: 200px;
-    height: 300px;
+  width: 200px;
+  height: 300px;
 }
 
 .all-project-cards {
-    padding: 5px;
-    width: 80%;
-    border: 2px solid darkgrey;
-    border-radius: 4px;
+  padding: 5px;
+  width: 80%;
+  border: 2px solid darkgrey;
+  border-radius: 4px;
 }
 
 .add-project-box {
-    color: darkblue;
+  color: darkblue;
 }
 
 .add-project-card {
-    padding: 8px;
+  padding: 8px;
 }
 
 .add-project-button {
-    border: none;
-    padding: 16px;
-    font-size: 32px;
-    color: darkblue;
-    background-color: lightgrey;
-    border-radius: 100%;
-    display: block;
+  border: none;
+  padding: 16px;
+  font-size: 32px;
+  color: darkblue;
+  background-color: lightgrey;
+  border-radius: 100%;
+  display: block;
 }
 
 .add-project-button:focus {
-    border: none;
-    outline: none;
+  border: none;
+  outline: none;
 }
 
 .add-project-button:active {
-    background-color: darkgray;
+  background-color: darkgray;
+}
+
+.delete-project-popup {
+  position: fixed;
+  background-color: aliceblue;
+  text-align: center;
+  left: 45%;
+  top: 5%;
+  transform: translate(-45%, 5%);
+  border: 2px solid darkgray;
+  z-index: 9;
 }
