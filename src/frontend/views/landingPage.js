@@ -58,6 +58,8 @@ class GetProjectCards extends Component {
             .catch(err => err);
     }
 
+
+
     componentDidMount() {
         this.callGetProjectAPI();
     }
@@ -90,7 +92,7 @@ class GetProjectCards extends Component {
     formatProject(project) {
         return (
             <div className="project-card-box">
-                <Card >
+                <Card>
                     <CardHeader>
                         <CardTitle>{project["name"]}</CardTitle>
                     </CardHeader>
