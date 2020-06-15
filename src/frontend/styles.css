@@ -1,27 +1,102 @@
 .main-page {
   font-family: Roboto, Hevetica, sans-serif;
-  background-color: #3A3335;
-  color: #C0F8D1;
+  background-color: #f1f1f1;
+  color: #011627;
+  /* padding-left: 5%;
+  padding-right: 5%; */
 }
 
 
 .main-page-top {
   position: relative;
-  display: block;
+  display: block; 
   text-align: left;
-  height: 60px;
-  background-color: #D81E5B;
-  
+  height: 64px;
+  background-color: white;
+  padding-bottom: 5%;
 
 }
+.PC-title {
+  padding-right: 150px;
 
-.main-page-bottom {
+} 
+
+
+
+.drop-button {
+  background-color: #FF3366;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+.drop-down {
+  position: relative;
+  display: inline-block;
+}
+
+.drop-down-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.drop-down-content a:hover {background-color: #f1f1f1}
+
+.drop-down:hover .drop-down-content {
+  display: block;
+}
+
+.drop-down:hover .drop-button {
+  background-color: #41EAD4;
+}
+
+.drop-down-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 500px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: white;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: #011627;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+.active {
+  background-color: #FF3366;
+}
+
+/* .main-page-bottom {
   background-color: black;
   position: relative;
   display: block;
-}
+} */
 
-.user-header {
+/* .user-header {
   display: block;
   position: relative;
   height: 200px;
@@ -29,6 +104,11 @@
   border-bottom: 2px;
   border-color: antiquewhite;
   color: aquamarine;
+} */
+
+.all-projects { 
+  text-align: center;
+  padding-top: 5%;
 }
 
 .addProj-btn {

@@ -17,11 +17,36 @@ class LandingPage extends Component {
     render() {
         return (
             <div className="main-page">
+                <link rel="stylesheet" 
+                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+                </link>
                 <div className="main-page-top">
-                    <h1>Project Crimson</h1>
+                    <div className="drop-down">
+                        <button className="drop-button">
+                            <svg class="bi bi-list" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M2.5 11.5A.5.5 0 0 1 3 11h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                        <div className="drop-down-content">
+                            <a href="#marketplace">Marketplace</a>
+                            <a href="#forum">Forum</a>
+                            <a href="#profile">My Profile</a>
+                            <a href="#porn">Maxim's phat a$$</a>
+                        </div>
+                    </div>
+                    <a className="PC-title"> Project Crimson</a>
+                    <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
+                    
+                    {/* <ul>
+                        <li><a className="active" href="#home">Project Crimson</a></li>
+                        <li><a href="#marketplace">Marketplace</a></li>
+                        <li><a href="#forum">Forum</a></li>
+                        <li><a href="#profile">My Profile</a></li>
+                    </ul> */}
                 </div>
+
                 <div className="all-projects">
-                    <h3>Project List</h3>
+                    <h3>Your Portfolio</h3>
                     <ProjectList user="none" />
                 </div>
             </div>
@@ -182,7 +207,7 @@ class AddProjectCard extends Component {
     render() {
         return (
             <div className="add-project-box">
-                <Card style={{ backgroundColor: "#6495ed", border: "0px" }}>
+                <Card style={{ backgroundColor: "##FFFFF", border: "0px" }}>
                     <button className="add-project-button" onClick={this.toggleAddProj}>
                         +
                     </button>
