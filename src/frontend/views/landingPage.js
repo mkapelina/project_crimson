@@ -10,40 +10,36 @@ import {
     Button,
     CardHeader,
     CardFooter,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
 } from "reactstrap";
 
+import menuIcon from './icons/threeLineMenu.png';
 import "./styles/landingPageStyles.css";
 
 class LandingPage extends Component {
     render() {
         return (
             <div className="main-page">
-                <link rel="stylesheet" 
-                href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-                </link>
                 <div className="main-page-top">
                     <div className="drop-down">
-                        <button className="drop-button">
-                            <svg class="bi bi-list" width="2em" height="2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M2.5 11.5A.5.5 0 0 1 3 11h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4A.5.5 0 0 1 3 3h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
-                            </svg>
-                        </button>
-                        <div className="drop-down-content">
-                            <a href="#marketplace">Marketplace</a>
-                            <a href="#forum">Forum</a>
-                            <a href="#profile">My Profile</a>
-                            <a href="#porn">Maxim's phat a$$</a>
-                        </div>
+                        <UncontrolledDropdown>
+                            <DropdownToggle>
+                                <img src={menuIcon} alt="menu" />
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem><a href="#marketplace">Marketplace</a></DropdownItem>
+                                <DropdownItem><a href="#forum">Forum</a></DropdownItem>
+                                <DropdownItem><a href="#profile">My Profile</a></DropdownItem>
+                                <DropdownItem><a href="#porn">Maxim's phat a$$</a></DropdownItem>
+
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
                     </div>
-                    <a className="PC-title"> Project Crimson</a>
                     <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
-                    
-                    {/* <ul>
-                        <li><a className="active" href="#home">Project Crimson</a></li>
-                        <li><a href="#marketplace">Marketplace</a></li>
-                        <li><a href="#forum">Forum</a></li>
-                        <li><a href="#profile">My Profile</a></li>
-                    </ul> */}
+                    <h5> Project Crimson</h5>
                 </div>
 
                 <div className="all-projects">

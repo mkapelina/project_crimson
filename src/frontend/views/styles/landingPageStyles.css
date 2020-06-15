@@ -9,32 +9,21 @@
 
 .main-page-top {
   position: relative;
-  display: block; 
-  text-align: left;
   height: 64px;
   background-color: white;
   padding-bottom: 5%;
-
-}
-.PC-title {
-  padding-right: 150px;
-
-} 
-
-
-
-<<<<<<< HEAD:src/frontend/styles.css
-.drop-button {
-  background-color: #FF3366;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
-.drop-down {
-  position: relative;
-  display: inline-block;
+.main-page-top * {
+  display: table-cell;
+  text-align: right;
+}
+
+.search-bar {
+  text-align: left;
 }
 
 .drop-down-content a {
@@ -63,54 +52,7 @@
   z-index: 1;
 }
 
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: white;
-}
-
-li {
-  float: left;
-}
-
-li a {
-  display: block;
-  color: #011627;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-li a:hover {
-  background-color: #111;
-}
-
-.active {
-  background-color: #FF3366;
-}
-
-/* .main-page-bottom {
-  background-color: black;
-  position: relative;
-  display: block;
-} */
-
-/* .user-header {
-=======
-.user-header {
->>>>>>> maxim:src/frontend/views/styles/landingPageStyles.css
-  display: block;
-  position: relative;
-  height: 200px;
-  justify-content: right;
-  border-bottom: 2px;
-  border-color: antiquewhite;
-  color: aquamarine;
-} */
-
-.all-projects { 
+.all-projects {
   text-align: center;
   padding-top: 5%;
 }
@@ -187,6 +129,7 @@ li a:hover {
 .project-card-box {
   width: 200px;
   height: 300px;
+  
 }
 
 .all-project-cards {

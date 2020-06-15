@@ -4,8 +4,7 @@
 // api routes
 import userAPI from './api/userProjects.js'
 
-const collectImports = (app) => {
-  userAPI(app);
-}
+const collectImports = (app) => userAPI(app);
+
 
 export default collectImports;
