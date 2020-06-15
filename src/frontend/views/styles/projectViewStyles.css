@@ -1,0 +1,65 @@
+.project-view-main {
+    font-size: large;
+    background-color: palegoldenrod;
+}
+
+.component-list {
+    list-style-type: none;
+}
+
+.comp-li * {
+    display: inline-block;
+}
+
+.add-comp-popup {
+    position: relative;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .form-popup {
+    position: fixed;
+    left: 45%;
+    top: 5%;
+    transform: translate(-45%, 5%);
+    border: 2px solid darkgray;
+    z-index: 9;
+  }
+  
+  .form-container {
+    max-width: 300px;
+    padding: 20px;
+    color: darkblue;
+    background-color: blanchedalmond;
+  }
+  
+  .form-container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0 22px 0;
+    border: none;
+    background: darkslategray;
+  }
+  
+  .form-container .btn-cancel {
+    background-color: blueviolet;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    width: 35%;
+    margin-bottom: 10px;
+    opacity: 0.8;
+    border-radius: 4px;
+  }
+  
+  .form-container .btn-submit {
+    background-color: blueviolet;
+    margin-left: 30%;
+    color: black;
+    padding: 12px 20px;
+    border: none;
+    width: 35%;
+    margin-bottom: 10px;
+    opacity: 0.8;
+    border-radius: 4px;
+  }

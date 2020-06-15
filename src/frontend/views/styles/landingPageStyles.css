@@ -9,11 +9,6 @@
   display: block;
 }
 
-.main-page-bottom {
-  position: relative;
-  display: block;
-}
-
 .user-header {
   display: block;
   position: relative;
@@ -91,31 +86,6 @@
   opacity: 0.8;
   border-radius: 4px;
 }
-
-.user-projects {
-  display: block;
-  position: relative;
-}
-
-.projects-table {
-  width: 80%;
-  padding: 15px;
-  table-layout: fixed;
-}
-
-.projects-header {
-  border-bottom: 1px solid darkgray;
-  font-size: larger;
-  color: darkgray;
-}
-
-.projects-list {
-  border-bottom: 1px solid gray;
-  font-size: medium;
-  color: darkblue;
-}
-
-/* landing page styles */
 
 .project-card-box {
   width: 200px;

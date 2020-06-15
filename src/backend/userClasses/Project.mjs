@@ -9,9 +9,17 @@ class Project {
         this.comps = [];
     }
 
+    
+
     getComp(comp) {
         if (comp && comp instanceof Comp) {
-            return this.comps.find(function(val) { return val.name === comp.name; });
+            var copy = Array.from(this.comps);
+            for (var i = 0; i < copy.length; i++) {
+                if (copy[i].name === comp.name) {
+                    return copy[i];
+                }
+                copy.concat(copy[i].subComps)
+            }
         }
         return null;
     }
@@ -19,6 +27,7 @@ class Project {
     addComp(comp) {
         if (comp && comp instanceof Comp) {
             this.comps.push(comp);
+            return true;
         }
     }
 
