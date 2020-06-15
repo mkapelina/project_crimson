@@ -23,6 +23,7 @@
 
 
 
+<<<<<<< HEAD:src/frontend/styles.css
 .drop-button {
   background-color: #FF3366;
   color: white;
@@ -97,6 +98,9 @@ li a:hover {
 } */
 
 /* .user-header {
+=======
+.user-header {
+>>>>>>> maxim:src/frontend/views/styles/landingPageStyles.css
   display: block;
   position: relative;
   height: 200px;
@@ -179,31 +183,6 @@ li a:hover {
   opacity: 0.8;
   border-radius: 4px;
 }
-
-.user-projects {
-  display: block;
-  position: relative;
-}
-
-.projects-table {
-  width: 80%;
-  padding: 15px;
-  table-layout: fixed;
-}
-
-.projects-header {
-  border-bottom: 1px solid darkgray;
-  font-size: larger;
-  color: darkgray;
-}
-
-.projects-list {
-  border-bottom: 1px solid gray;
-  font-size: medium;
-  color: darkblue;
-}
-
-/* landing page styles */
 
 .project-card-box {
   width: 200px;

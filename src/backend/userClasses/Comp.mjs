@@ -20,6 +20,7 @@ class Comp {
     addStep(step) {
         if (step && step instanceof Step) {
             this.steps.push(step);
+            return true;
         }
     }
 
@@ -29,13 +30,14 @@ class Comp {
         }
     }
 
-    addComp(comp) {
+    addSubComp(comp) {
         if (comp && comp instanceof Comp) {
             this.subComps.push(comp);
+            return true;
         }
     }
 
-    removeComp(comp) {
+    removeSubComp(comp) {
         if (comp && comp instanceof Comp) {
             this.subComps = this.comps.filter(function(val) { return val.name !== comp.name});
         }
