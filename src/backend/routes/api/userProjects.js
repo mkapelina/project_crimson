@@ -1,7 +1,7 @@
 import User from '../../userClasses/User.mjs'
 import Project from '../../userClasses/Project.mjs'
-// import Comp from '../../userClasses/Comp.mjs'
-// import Step from '../../userClasses/Step.mjs'
+import Comp from '../../userClasses/Comp.mjs'
+import Step from '../../userClasses/Step.mjs'
 
 //======================================================================
 // creating a default user with a default project for testing purposes
@@ -24,70 +24,124 @@ var defUser = new User("default guy", "defaultguy@gmail.com");
 //======================================================================
 
 const userAPI = (app) => {
-    app.post('/editProjects', function(req, res) {
-        let projName;
-        let projDesc;
+    app.post('/editProjects', function (req, res) {
         let proj;
-        let json;
+        let comp;
+        let obj;
+        let found;
 
-        // let compName;
-        // let compDesc;
-        // let comp;
-        
-        // let stepName;
-        // let stepDesc
-        // let step;
+        var option = req.body.option;
+        var type = req.body.type;
 
-        var mode = req.body.option;
+        var name = req.body.name;
+        var desc = req.body.desc;
 
-        if (mode === 'ADD') {
-            projName = req.body.name;
-            projDesc = req.body.desc;
-            proj = new Project(projName, projDesc);
+        var json_success = { "status": 200 };
+        var json_bad_option = { "status": 400, 'message': 'invalid option ' + option };
+        var json_bad_type = { "status": 400, 'message': 'invalid option type ' + type }
+        var json_not_found = { "status": 404, 'message': type + ' ' + name + ' not found' }
 
-            defUser.addProject(proj);
-            json = { "status" : 200 };
-            res.json(json);
-        }
-
-        else if (mode === 'DELETE') {
-            projName = req.body.name;
-            proj = new Project(projName, "");
-            defUser.deleteProject(proj);
-            json = { "status" : 200 };
-            res.json(json);
-        }
-
-        else {
-            json = { "status" : 800 };
-            res.json(json);
+        switch (option) {
+            case 'ADD':
+                switch (type) {
+                    case 'PROJECT':
+                        obj = new Project(name, desc);
+                        defUser.addProject(obj);
+                        res.json(json_success);
+                        break;
+                    case 'COMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        obj = new Comp(name, desc);
+                        found = defUser.getProject(proj).addComp(obj);
+                        found ? res.json(json_success) : res.json(json_not_found);
+                        break;
+                    case 'SUBCOMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        obj = new Comp(name, desc);
+                        found = defUser.getProject(proj).getComp(comp).addSubComp(obj);
+                        found ? res.json(json_success) : res.json(json_not_found);
+                        break;
+                    case 'STEP':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        obj = new Step(name, desc);
+                        found = defUser.getProject(proj).getComp(comp).addStep(obj);
+                        found ? res.json(json_success) : res.json(json_not_found);
+                        break;
+                    default:
+                        res.json(json_bad_type);
+                        break;
+                }
+                break;
+            case 'DELETE':
+                switch(type) {
+                    case 'PROJECT':
+                        obj = new Project(name, '');
+                        defUser.deleteProject(obj);
+                        res.json(json_success);
+                        break;
+                    case 'COMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        obj = new Comp(name, '');
+                        defUser.getProject(proj).removeComp(obj);
+                        res.json(json_success);
+                        break;
+                    case 'SUBCOMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        obj = new Comp(name, '');
+                        defUser.getProject(proj).getComp(comp).removeSubComp(obj);
+                        res.json(json_success);
+                        break;
+                    case 'STEP':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        obj = new Step(name, '');
+                        defUser.getProject(proj).getComp(comp).removeStep(obj);
+                        res.json(json_success);
+                        break;
+                    default:
+                        res.json(json_bad_type);
+                        break;
+                }
+                break;
+            default:
+                res.json(json_bad_option);
         }
     });
 
-    app.get('/getProjects', function(req, res) {
-        let json;
-
+    app.post('/getProject', function (req, res) {
+        var json = {};
         var projName = req.body.name;
 
         if (!projName) {
-            json = defUser.getAllProjectsJSON();
-            json["status"] = 200;
+            json["status"] = 404;
+            json["message"] = 'request body must include a project name';
             res.json(json);
         }
         else {
-            var proj = new Project(projName, "");
-            var userProj = defUser.getProject(proj);
-            if (userProj) {
-                json = userProj.jsonify();
-                json["status"] = 200;
-                res.json(json);
+            var project = new Project(projName, '');
+            var userProject = defUser.getProject(project);
+
+            if (!userProject) {
+                json["status"] = 404;
+                json['message'] = `project ${projName} not found`
+                res.json(json)
             }
             else {
-                json["status"] = 404;
-                json["message"] = "Project not found";
+                json = userProject.jsonify()
+                json['status'] = 200;
                 res.json(json);
             }
         }
+
+    });
+
+    app.get('/getProjects', function (req, res) {
+        var json = defUser.getAllProjectsJSON();
+        json["status"] = 200;
+        res.json(json);
     });
 }
 
