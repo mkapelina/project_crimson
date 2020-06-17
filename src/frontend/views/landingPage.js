@@ -10,8 +10,13 @@ import {
     Button,
     CardHeader,
     CardFooter,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
 } from "reactstrap";
 
+import menuIcon from './icons/threeLineMenu.png';
 import "./styles/landingPageStyles.css";
 
 class LandingPage extends Component {
@@ -19,10 +24,26 @@ class LandingPage extends Component {
         return (
             <div className="main-page">
                 <div className="main-page-top">
-                    <h1>Project Crimson</h1>
+                    <div className="drop-down">
+                        <UncontrolledDropdown>
+                            <DropdownToggle>
+                                <img src={menuIcon} alt="menu" />
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem><a href="#marketplace">Marketplace</a></DropdownItem>
+                                <DropdownItem><a href="#forum">Forum</a></DropdownItem>
+                                <DropdownItem><a href="#profile">My Profile</a></DropdownItem>
+                                <DropdownItem><a href="#porn">Maxim's phat a$$</a></DropdownItem>
+
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
+                    <h5> Project Crimson</h5>
                 </div>
+
                 <div className="all-projects">
-                    <h3>Project List</h3>
+                    <h3>Your Portfolio</h3>
                     <ProjectCards user="none" />
                 </div>
             </div>
@@ -183,7 +204,7 @@ class AddProjectCard extends Component {
     render() {
         return (
             <div className="add-project-box">
-                <Card style={{ backgroundColor: "#6495ed", border: "0px" }}>
+                <Card style={{ backgroundColor: "##FFFFF", border: "0px" }}>
                     <button className="add-project-button" onClick={this.toggleAddProj}>
                         +
                     </button>
