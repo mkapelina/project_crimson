@@ -30,6 +30,10 @@ const userAPI = (app) => {
         let obj;
         let found;
 
+        let userProj;
+        let userComp;
+        let userStep;
+
         var option = req.body.option;
         var type = req.body.type;
 
@@ -106,17 +110,60 @@ const userAPI = (app) => {
                         break;
                 }
                 break;
+            case 'MODIFY':
+                switch(type) {
+                    case 'PROJECT':
+                        obj = new Project(req.body.projectName, '');
+                        userProj = defUser.getProject();
+                        userProj.name = name;
+                        userProj.desc = desc
+                        res.json(json_success);
+                        break;
+                    case 'COMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        obj = new Comp(req.body.compName, '');
+                        userComp = defUser.getProject(proj).getComp(obj);
+                        userComp.name = name;
+                        userComp.desc = desc;
+                        res.json(json_success);
+                        break;
+                    case 'SUBCOMPONENT':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        userComp = defUser.getProject(proj).getComp(comp);
+                        userComp.name = name;
+                        userComp.desc = desc;
+                        res.json(json_success);
+                        break;
+                    case 'STEP':
+                        proj = new Project(req.body.projectName, '');
+                        comp = new Comp(req.body.compName, '');
+                        obj = new Step(req.body.stepName, '');
+                        userStep = defUser.getProject(proj).getComp(comp).getStep(obj);
+                        userStep.name = name;
+                        userStep.desc = desc;
+                        res.json(json_success);
+                        break;
+                    default:
+                        res.json(json_bad_type);
+                        break;
+                }
+                break;
             default:
                 res.json(json_bad_option);
         }
     });
 
     app.post('/getProject', function (req, res) {
+        let comp;
+        let obj;
+
         var json = {};
         var projName = req.body.name;
+        var option = req.body.option;
 
         if (!projName) {
-            json["status"] = 404;
+            json["status"] = 400;
             json["message"] = 'request body must include a project name';
             res.json(json);
         }
@@ -130,8 +177,29 @@ const userAPI = (app) => {
                 res.json(json)
             }
             else {
-                json = userProject.jsonify()
-                json['status'] = 200;
+                switch(option) {
+                    case 'PROJECT':
+                        json = userProject.jsonify()
+                        json['status'] = 200;
+                        break;
+                    case 'COMPONENTS':
+                        comp = req.body.compName;
+                        obj = new Comp(comp, '');
+                        json = userProject.getComp(obj).jsonify();
+                        json['status'] = 200;
+                        break;
+                    case 'STEPS':
+                        comp = req.body.compName;
+                        obj = new Comp(comp, '');
+                        json = userProject.getComp(obj).jsonify();
+                        json = {'steps': json.steps};
+                        json['status'] = 200;
+                        break;
+                    default:
+                        json["status"] = 400;
+                        json["message"] = 'invalid option type'
+                        break;
+                }
                 res.json(json);
             }
         }

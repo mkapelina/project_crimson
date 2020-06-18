@@ -232,11 +232,13 @@ class AddProjectForm extends Component {
     }
 
     handleNameChange(e) {
-        this.setState({ name: e.target.value });
+        var newName = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+        this.setState({ name: newName });
     }
 
     handleDescChange(e) {
-        this.setState({ desc: e.target.value });
+        var newDesc = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+        this.setState({ desc: newDesc });
     }
 
     handleSubmit(e) {
