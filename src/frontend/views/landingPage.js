@@ -34,7 +34,6 @@ class LandingPage extends Component {
                                 <DropdownItem><a href="#forum">Forum</a></DropdownItem>
                                 <DropdownItem><a href="#profile">My Profile</a></DropdownItem>
                                 <DropdownItem><a href="#porn">Maxim's phat a$$</a></DropdownItem>
-
                             </DropdownMenu>
                         </UncontrolledDropdown>
                     </div>
