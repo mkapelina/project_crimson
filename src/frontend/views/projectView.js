@@ -17,7 +17,7 @@ class ProjectView extends Component {
     }
 
     callGetProjectAPI() {
-        var body = { "name": this.props.match.url.slice(1), "option": 'PROJECT' }
+        var body = { "name": this.props.match.url.slice(1)}
 
         fetch('http://localhost:9000/getProject', {
             headers: { 'Content-Type': 'application/json' },
@@ -133,11 +133,9 @@ class ComponentView extends Component {
         }
 
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name };
-        body['type'] = 'COMPONENT';
 
         if (!this.props.comp) {
-            body['option'] = 'ADD';
-            fetch('http://localhost:9000/editProjects', {
+            fetch('http://localhost:9000/addComponent', {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(body)
@@ -145,9 +143,8 @@ class ComponentView extends Component {
         }
         else {
             this.toggleIsEditing();
-            body['option'] = 'MODIFY';
             body['compName'] = this.props.comp.name;
-            fetch('http://localhost:9000/editProjects', {
+            fetch('http://localhost:9000/modifyComponent', {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(body)
@@ -159,10 +156,9 @@ class ComponentView extends Component {
 
     DeleteComponent(comp) {
         var body = { "name": comp.name, "desc": comp.desc, "projectName": this.props.project.name };
-        body["option"] = "DELETE";
-        body['type'] = 'COMPONENT';
+        
 
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/deleteComponent', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body),
@@ -170,10 +166,10 @@ class ComponentView extends Component {
             this.props.onChange(res) : console.log(res.message));
     }
 
-    callGetProjectAPI() {
-        var body = { 'name': this.props.project.name, 'compName': this.props.comp.name, 'option': 'STEPS' }
+    callGetStepsAPI() {
+        var body = { 'name': this.props.project.name, 'compName': this.props.comp.name }
 
-        fetch('http://localhost:9000/getProject', {
+        fetch('http://localhost:9000/getSteps', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
@@ -183,7 +179,7 @@ class ComponentView extends Component {
 
     refreshStepList(res) {
         this.setState({ isAddingStep: false });
-        this.callGetProjectAPI();
+        this.callGetStepsAPI();
     }
 
     render() {
@@ -300,12 +296,9 @@ class StepView extends Component {
         }
 
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name };
-        body['type'] = 'STEP';
 
         if (!this.props.step) {
-            body['option'] = 'ADD';
-
-            fetch('http://localhost:9000/editProjects', {
+            fetch('http://localhost:9000/addStep', {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(body)
@@ -313,10 +306,9 @@ class StepView extends Component {
         }
         else {
             this.toggleIsEditing();
-            body['option'] = 'MODIFY';
             body['stepName'] = this.props.step.name;
-
-            fetch('http://localhost:9000/editProjects', {
+            
+            fetch('http://localhost:9000/modifyStep', {
                 headers: { 'Content-Type': 'application/json' },
                 method: 'POST',
                 body: JSON.stringify(body)
@@ -331,11 +323,9 @@ class StepView extends Component {
             "name": step.name, "desc": step.desc,
             "projectName": this.props.project.name, "compName": this.props.comp.name
         };
-        body["option"] = 'DELETE';
-        body['type'] = 'STEP';
+        
 
-
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/deleteStep', {
             headers: { 'Content-type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body),

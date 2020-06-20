@@ -12,7 +12,7 @@ app.use(cors());
 collectImports(app)
 
 app.get('/', (req, res) => {
-  res.send('PORT ' + port);
+  res.send('Welcome to the backend, this is PORT ' + port);
 });
 
 app.listen(port, (err) => {
