@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 import {
-    CardDeck,
     Card,
     CardTitle,
     CardText,
@@ -10,8 +9,15 @@ import {
     Button,
     CardHeader,
     CardFooter,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    Row,
+    Container,
 } from "reactstrap";
 
+import menuIcon from './icons/threeLineMenu.png';
 import "./styles/landingPageStyles.css";
 
 class LandingPage extends Component {
@@ -19,10 +25,25 @@ class LandingPage extends Component {
         return (
             <div className="main-page">
                 <div className="main-page-top">
-                    <h1>Project Crimson</h1>
+                    <div className="drop-down">
+                        <UncontrolledDropdown>
+                            <DropdownToggle>
+                                <img src={menuIcon} alt="menu" />
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem><a href="#marketplace">Marketplace</a></DropdownItem>
+                                <DropdownItem><a href="#forum">Forum</a></DropdownItem>
+                                <DropdownItem><a href="#profile">My Profile</a></DropdownItem>
+                                <DropdownItem><a href="#porn">Maxim's phat a$$</a></DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
+                    <h5> Project Crimson</h5>
                 </div>
+
                 <div className="all-projects">
-                    <h3>Project List</h3>
+                    <h3>Your Portfolio</h3>
                     <ProjectCards user="none" />
                 </div>
             </div>
@@ -35,8 +56,8 @@ class ProjectCards extends Component {
         super(props);
 
         this.state = {
-            projects : {},
-            isLoading : true,
+            projects: {},
+            isLoading: true,
         };
         this.refreshProjList = this.refreshProjList.bind(this);
         this.callGetProjectAPI = this.callGetProjectAPI.bind(this);
@@ -45,7 +66,7 @@ class ProjectCards extends Component {
     callGetProjectAPI() {
         fetch("http://localhost:9000/getProjects")
             .then(res => res.json())
-            .then(res => this.setState({ projects : res, isLoading : false }))
+            .then(res => this.setState({ projects: res, isLoading: false }))
             .catch(err => err);
     }
 
@@ -67,39 +88,37 @@ class ProjectCards extends Component {
     // format a single projects json string into proper html/bootstrap card view
     formatProject(project) {
         return (
-            <div className="project-card-box">
-                <Card>
-                    <Link to={`/${project.name}`}>
-                        <CardHeader>
-                            <CardTitle>{project["name"]}</CardTitle>
-                        </CardHeader>
-                    </Link>
-                    <CardBody>
-                        <CardText>{project["description"]}</CardText>
-                    </CardBody>
-                    <CardFooter>
-                        <DeleteProjectConfirm 
-                            project={project["name"]}
-                            onDeleteProj={this.refreshProjList} />
-                    </CardFooter>
-                </Card>
-            </div>
+            <Card className='project-card'>
+                <Link to={`/${project.name}`}>
+                    <CardHeader>
+                        <CardTitle>{project["name"]}</CardTitle>
+                    </CardHeader>
+                </Link>
+                <CardBody>
+                    <CardText>{project["description"]}</CardText>
+                </CardBody>
+                <CardFooter>
+                    <DeleteProjectConfirm
+                        project={project["name"]}
+                        onDeleteProj={this.refreshProjList} />
+                </CardFooter>
+            </Card>
         );
     }
 
     render() {
         return (
-            <div className="all-project-cards">
-                <CardDeck>
+            <Container className="mt-3" fluid >
+                <Row>
+                    {!this.state.isLoading && <AddProjectCard
+                        onAddProj={this.refreshProjList}
+                        projNames={this.state.projects.projects.map(project => project.name)} />
+                    }
                     {!this.state.isLoading && this.state.projects.projects.map(project => (
                         <div key={project.name}>{this.formatProject(project)}</div>))
                     }
-                    {!this.state.isLoading && <AddProjectCard 
-                        onAddProj={this.refreshProjList} 
-                        projNames={this.state.projects.projects.map(project => project.name)} />
-                    }
-                </CardDeck>
-            </div>
+                </Row>
+            </Container>
         );
     }
 }
@@ -108,28 +127,26 @@ class DeleteProjectConfirm extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { willDelete : false};
+        this.state = { willDelete: false };
     }
 
     deleteProject(projName) {
-        var body = {name: projName}
-        body["option"] = "DELETE";
-        body['type'] = 'PROJECT';
+        var body = { name: projName }
 
         var req = {
-            headers: { 'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
         };
 
         this.toggleWillDelete();
-        fetch('http://localhost:9000/editProjects', req)
+        fetch('http://localhost:9000/deleteProject', req)
             .then(res => res.json())
             .then(res => this.props.onDeleteProj(res));
     }
 
-    toggleWillDelete = () => this.setState({ willDelete : !this.state.willDelete });
-    
+    toggleWillDelete = () => this.setState({ willDelete: !this.state.willDelete });
+
     render() {
         return (
             <div className='delete-project'>
@@ -138,7 +155,7 @@ class DeleteProjectConfirm extends Component {
                     <p>Are you sure you want to delete {this.props.project}?</p>
                     <button onClick={this.toggleWillDelete}>No</button>
                     <button onClick={() => this.deleteProject(this.props.project)}>Yes</button>
-                </div> }
+                </div>}
             </div>
         )
     }
@@ -163,13 +180,11 @@ class AddProjectCard extends Component {
     handleSubmit(input) {
         var name = input.name;
         var desc = input.desc;
-        var body = { "name" : name, "desc" : desc };
-        body['option'] = 'ADD';
-        body['type'] = 'PROJECT'
+        var body = { "name": name, "desc": desc };
 
         this.toggleAddProj();
-        fetch("http://localhost:9000/editProjects", {
-            headers: { 'Content-Type': 'application/json'},
+        fetch("http://localhost:9000/addProject", {
+            headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
         }).then(res => res.json()).then(res => this.props.onAddProj(res));
@@ -182,18 +197,16 @@ class AddProjectCard extends Component {
 
     render() {
         return (
-            <div className="add-project-box">
-                <Card style={{ backgroundColor: "#6495ed", border: "0px" }}>
-                    <button className="add-project-button" onClick={this.toggleAddProj}>
-                        +
+            <Card className="add-project-card">
+                <button className="add-project-button" onClick={this.toggleAddProj}>
+                    +
                     </button>
-                    {this.state.showAddProj && (<AddProjectForm
-                        onSubmit={this.handleSubmit} 
-                        onCancel={this.handleCancel} 
-                        projNames={this.props.projNames}/>)}
-                    <CardText>Add Project</CardText>
-                </Card>
-            </div>
+                {this.state.showAddProj && (<AddProjectForm
+                    onSubmit={this.handleSubmit}
+                    onCancel={this.handleCancel}
+                    projNames={this.props.projNames} />)}
+                <CardText style={{ fontSize: "18px" }}>Add Project</CardText>
+            </Card>
         );
     }
 }
@@ -213,17 +226,19 @@ class AddProjectForm extends Component {
     }
 
     handleNameChange(e) {
-        this.setState({ name: e.target.value });
+        var newName = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+        this.setState({ name: newName });
     }
 
     handleDescChange(e) {
-        this.setState({ desc: e.target.value });
+        var newDesc = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
+        this.setState({ desc: newDesc });
     }
 
     handleSubmit(e) {
         e.preventDefault();
         if (this.props.projNames.includes(this.state.name)) {
-            this.setState({ isValid : false });
+            this.setState({ isValid: false });
         } else {
             this.props.onSubmit(this.state);
         }
