@@ -131,9 +131,7 @@ class DeleteProjectConfirm extends Component {
 
     deleteProject(projName) {
         var body = {name: projName}
-        body["option"] = "DELETE";
-        body['type'] = 'PROJECT';
-
+        
         var req = {
             headers: { 'Content-Type': 'application/json'},
             method: 'POST',
@@ -141,7 +139,7 @@ class DeleteProjectConfirm extends Component {
         };
 
         this.toggleWillDelete();
-        fetch('http://localhost:9000/editProjects', req)
+        fetch('http://localhost:9000/deleteProject', req)
             .then(res => res.json())
             .then(res => this.props.onDeleteProj(res));
     }
@@ -182,11 +180,9 @@ class AddProjectCard extends Component {
         var name = input.name;
         var desc = input.desc;
         var body = { "name" : name, "desc" : desc };
-        body['option'] = 'ADD';
-        body['type'] = 'PROJECT'
 
         this.toggleAddProj();
-        fetch("http://localhost:9000/editProjects", {
+        fetch("http://localhost:9000/addProject", {
             headers: { 'Content-Type': 'application/json'},
             method: 'POST',
             body: JSON.stringify(body)

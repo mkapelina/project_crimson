@@ -17,7 +17,7 @@ class ProjectView extends Component {
     }
 
     callGetProjectAPI() {
-        var body = { "name": this.props.match.url.slice(1), "option": 'PROJECT' }
+        var body = { "name": this.props.match.url.slice(1)}
 
         fetch('http://localhost:9000/getProject', {
             headers: { 'Content-Type': 'application/json' },
@@ -96,11 +96,10 @@ class ComponentView extends Component {
         }
 
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name };
-        body['option'] = 'MODIFY';
-        body['type'] = 'COMPONENT';
+        
 
         this.toggleIsEditing();
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/modifyComponent', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
@@ -109,10 +108,9 @@ class ComponentView extends Component {
 
     DeleteComponent(comp) {
         var body = { "name": comp.name, "desc": comp.desc, "projectName": this.props.project.name };
-        body["option"] = "DELETE";
-        body['type'] = 'COMPONENT';
+        
 
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/deleteComponent', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body),
@@ -196,9 +194,9 @@ class StepListView extends Component {
     }
 
     callGetProjectAPI() {
-        var body = { 'name': this.props.project.name, 'compName': this.props.comp.name, 'option': 'STEPS' }
+        var body = { 'name': this.props.project.name, 'compName': this.props.comp.name}
 
-        fetch('http://localhost:9000/getProject', {
+        fetch('http://localhost:9000/getSteps', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
@@ -231,11 +229,10 @@ class StepListView extends Component {
         }
 
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name, 'stepName': step.name };
-        body['option'] = 'MODIFY';
-        body['type'] = 'STEP';
+       
 
         this.toggleIsEditing();
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/modifyStep', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
@@ -247,11 +244,9 @@ class StepListView extends Component {
             "name": step.name, "desc": step.desc,
             "projectName": this.props.project.name, "compName": this.props.comp.name
         };
-        body["option"] = 'DELETE';
-        body['type'] = 'STEP';
+        
 
-
-        fetch('http://localhost:9000/editProjects', {
+        fetch('http://localhost:9000/deleteStep', {
             headers: { 'Content-type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body),
@@ -322,11 +317,10 @@ class AddStep extends Component {
         var name = input.name;
         var desc = input.desc;
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name };
-        body['option'] = 'ADD';
-        body['type'] = 'STEP';
+        
 
         this.toggleShowAddStep();
-        fetch("http://localhost:9000/editProjects", {
+        fetch("http://localhost:9000/addStep", {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
@@ -435,11 +429,10 @@ class AddComponent extends Component {
         var name = input.name;
         var desc = input.desc;
         var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name };
-        body['option'] = 'ADD';
-        body['type'] = 'COMPONENT';
+        
 
         this.toggleShowAddComp();
-        fetch("http://localhost:9000/editProjects", {
+        fetch("http://localhost:9000/addComponent", {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
             body: JSON.stringify(body)
