@@ -7,9 +7,7 @@ import Step from '../../userClasses/Step.mjs'
 var defUser = new User("default guy", "defaultguy@gmail.com");
 
 var json_success = { "status": 200 };
-var json_bad_option = { "status": 400, 'message': 'invalid option ' + option };
-var json_bad_type = { "status": 400, 'message': 'invalid option type ' + type };
-var json_not_found = { "status": 404, 'message': type + ' ' + name + ' not found' };
+var json_not_found = { "status": 404, 'message': 'not found' };
 
 const userAPI = (app) => {
     app.post('/addProject', function (req, res) {
@@ -101,7 +99,7 @@ const userAPI = (app) => {
         var desc = req.body.desc;
 
         var obj = new Project(req.body.projectName, '');
-        var userProj = defUser.getProject();
+        var userProj = defUser.getProject(obj);
         userProj.name = name;
         userProj.desc = desc
         res.json(json_success);
@@ -142,136 +140,6 @@ const userAPI = (app) => {
         userStep.name = name;
         userStep.desc = desc;
         res.json(json_success);
-    });
-    
-
-
-
-    app.post('/editProjects', function (req, res) {
-        let proj;
-        let comp;
-        let obj;
-        let found;
-
-        let userProj;
-        let userComp;
-        let userStep;
-
-        var option = req.body.option;
-        var type = req.body.type;
-
-        var name = req.body.name;
-        var desc = req.body.desc;
-
-
-
-        switch (option) {
-            case 'ADD':
-                switch (type) {
-                    case 'PROJECT':
-                        obj = new Project(name, desc);
-                        defUser.addProject(obj);
-                        res.json(json_success);
-                        break;
-                    case 'COMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        obj = new Comp(name, desc);
-                        found = defUser.getProject(proj).addComp(obj);
-                        found ? res.json(json_success) : res.json(json_not_found);
-                        break;
-                    case 'SUBCOMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        obj = new Comp(name, desc);
-                        found = defUser.getProject(proj).getComp(comp).addSubComp(obj);
-                        found ? res.json(json_success) : res.json(json_not_found);
-                        break;
-                    case 'STEP':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        obj = new Step(name, desc);
-                        found = defUser.getProject(proj).getComp(comp).addStep(obj);
-                        found ? res.json(json_success) : res.json(json_not_found);
-                        break;
-                    default:
-                        res.json(json_bad_type);
-                        break;
-                }
-                break;
-            case 'DELETE':
-                switch (type) {
-                    case 'PROJECT':
-                        obj = new Project(name, '');
-                        defUser.deleteProject(obj);
-                        res.json(json_success);
-                        break;
-                    case 'COMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        obj = new Comp(name, '');
-                        defUser.getProject(proj).removeComp(obj);
-                        res.json(json_success);
-                        break;
-                    case 'SUBCOMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        obj = new Comp(name, '');
-                        defUser.getProject(proj).getComp(comp).removeSubComp(obj);
-                        res.json(json_success);
-                        break;
-                    case 'STEP':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        obj = new Step(name, '');
-                        defUser.getProject(proj).getComp(comp).removeStep(obj);
-                        res.json(json_success);
-                        break;
-                    default:
-                        res.json(json_bad_type);
-                        break;
-                }
-                break;
-            case 'MODIFY':
-                switch (type) {
-                    case 'PROJECT':
-                        obj = new Project(req.body.projectName, '');
-                        userProj = defUser.getProject();
-                        userProj.name = name;
-                        userProj.desc = desc
-                        res.json(json_success);
-                        break;
-                    case 'COMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        obj = new Comp(req.body.compName, '');
-                        userComp = defUser.getProject(proj).getComp(obj);
-                        userComp.name = name;
-                        userComp.desc = desc;
-                        res.json(json_success);
-                        break;
-                    case 'SUBCOMPONENT':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        userComp = defUser.getProject(proj).getComp(comp);
-                        userComp.name = name;
-                        userComp.desc = desc;
-                        res.json(json_success);
-                        break;
-                    case 'STEP':
-                        proj = new Project(req.body.projectName, '');
-                        comp = new Comp(req.body.compName, '');
-                        obj = new Step(req.body.stepName, '');
-                        userStep = defUser.getProject(proj).getComp(comp).getStep(obj);
-                        userStep.name = name;
-                        userStep.desc = desc;
-                        res.json(json_success);
-                        break;
-                    default:
-                        res.json(json_bad_type);
-                        break;
-                }
-                break;
-            default:
-                res.json(json_bad_option);
-        }
     });
 
     app.post('/getProject', function(req, res){

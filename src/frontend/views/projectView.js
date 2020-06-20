@@ -104,7 +104,7 @@ class ComponentView extends Component {
 
         this.DeleteComponent = this.DeleteComponent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.callGetProjectAPI = this.callGetProjectAPI.bind(this);
+        this.callGetStepsAPI = this.callGetStepsAPI.bind(this);
         this.refreshStepList = this.refreshStepList.bind(this);
     }
 
@@ -184,7 +184,9 @@ class ComponentView extends Component {
 
     render() {
         var comp = this.props.comp;
-        this.props.comp.steps = this.state.steps;
+        if (comp) {
+            this.props.comp.steps = this.state.steps;
+        }
         return (<ListGroupItem>
             <ListGroupItemHeading>
                 {!this.state.isEditing && <button className={this.state.isShowing ? "comp-li-btn-r" : "comp-li-btn"}

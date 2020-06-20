@@ -126,12 +126,6 @@
   border-radius: 4px;
 }
 
-.project-card-box {
-  width: 30%;
-  height: 100%;
-  
-}
-
 .all-project-cards {
   position: relative;
   padding: 5px;
@@ -144,18 +138,40 @@
   border-radius: 4px;
 }
 
+.horizontal-scrollable > .card-row {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.project-card {
+  width: 16rem;
+  height: 16rem;
+  margin: 1rem;
+  display: inline-block;
+  float: none;
+}
+
 .add-project-box {
   color: darkblue;
 }
 
 .add-project-card {
-  padding: 8px;
+  background-color: #F1F1F1!important;
+  justify-content: center;
+  border: 1px solid black;
+  margin: 1rem;
+  width: 16rem;
+  height: 16rem;
+  white-space: normal;
 }
 
 .add-project-button {
   border: none;
-  padding: 16px;
-  font-size: 32px;
+  width: 10rem;
+  height: 10rem;
+  font-size: 64px;
+  margin-left: auto;
+  margin-right: auto;
   color: darkblue;
   background-color: lightgrey;
   border-radius: 100%;
