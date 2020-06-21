@@ -15,9 +15,16 @@ import {
     DropdownItem,
     Row,
     Container,
+    ButtonDropdown,
+    UncontrolledButtonDropdown,
+    Progress, 
+    ListGroup,
+    ListGroupItem,
+    Badge
 } from "reactstrap";
 
 import menuIcon from './icons/threeLineMenu.png';
+import threeDotIcon from './icons/verticalThreeDotsMenu.png';
 import "./styles/landingPageStyles.css";
 
 class LandingPage extends Component {
@@ -27,7 +34,7 @@ class LandingPage extends Component {
                 <div className="main-page-top">
                     <div className="drop-down">
                         <UncontrolledDropdown>
-                            <DropdownToggle>
+                            <DropdownToggle className="drop-down-button">
                                 <img src={menuIcon} alt="menu" />
                             </DropdownToggle>
                             <DropdownMenu>
@@ -43,8 +50,13 @@ class LandingPage extends Component {
                 </div>
 
                 <div className="all-projects">
-                    <h3>Your Portfolio</h3>
-                    <ProjectCards user="none" />
+                    <div className="all-projects-ghost">
+                        <h3>Your Portfolio</h3>
+                        <ProjectCards user="none" />
+                    </div>
+                </div>
+                <div className="main-page-bottom">
+
                 </div>
             </div>
         );
@@ -87,21 +99,33 @@ class ProjectCards extends Component {
     formatProject(project) {
         return (
             <Card className='project-card'>
-                <Link to={`/${project.name}`}>
-                    <CardHeader>
+                <CardHeader>
+                    <UncontrolledButtonDropdown className="card-menu" size="sm">
+                        <DropdownToggle className="card-menu-dropdown-button" color="white">
+                            <img src={threeDotIcon} alt="menu"/>
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem>Edit</DropdownItem>
+                            <DropdownItem divider />
+                            <DeleteProjectConfirm
+                                    project={project["name"]}
+                                    onDeleteProj={this.refreshProjList} />
+                        </DropdownMenu>
+                    </UncontrolledButtonDropdown>
+                    <Link to={`/${project.name}`}>
                         <CardTitle>{project["name"]}</CardTitle>
-                    </CardHeader>
-                </Link>
-                <CardBody>
+                    </Link>
+                </CardHeader>
+                <CardBody className="card-body">
                     <CardText>{project["description"]}</CardText>
                 </CardBody>
-                <CardFooter>
-                    <DeleteProjectConfirm
-                        project={project["name"]}
-                        onDeleteProj={this.refreshProjList} />
-                </CardFooter>
+                    <ListGroup className="card-footer-list" flush>
+                        <ListGroupItem id="component-tally" className="card-footer-list-items">Components: <Badge pill>{project["components"].length}</Badge></ListGroupItem>
+                        <ListGroupItem id="project-progress-bar" className="card-footer-list-items"> <Progress animated value={100} color="success">100% Complete</Progress></ListGroupItem>
+                    </ListGroup>
             </Card>
         );
+
     }
 
     render() {
@@ -148,7 +172,7 @@ class DeleteProjectConfirm extends Component {
     render() {
         return (
             <div className='delete-project'>
-                <Button onClick={this.toggleWillDelete}>Delete</Button>
+                <Button onClick={this.toggleWillDelete} color="white">Delete Project</Button>
                 {this.state.willDelete && <div className='delete-project-popup'>
                     <p>Are you sure you want to delete {this.props.project}?</p>
                     <button onClick={this.toggleWillDelete}>No</button>
