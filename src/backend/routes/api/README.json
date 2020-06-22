@@ -68,45 +68,6 @@
                 }
             }
         },
-        "/addSubcomponent": {
-            "post": {
-                "description": "Add Subcomponent to the component with the specified title in the specified project to the server's user instance.",
-                "requestBody": {
-                    "required": "true",
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "body": {
-                        "name": {
-                            "description": "name of the subcomponent to be added",
-                            "type": "string"
-                        },
-                        "desc": {
-                            "description": "description of subcomponent to be added",
-                            "type": "string"
-                        },
-                        "projectName": {
-                            "description": "name of project that contains component that subcomponent is to be added to.",
-                            "type": "string"
-                        },
-                        "compName": {
-                            "description": "name of component that subcomponent is to be added to.",
-                            "type": "string"
-                        }
-                    }
-                },
-                "responseBody": {
-                    "200": {
-                        "description": "subcomponent was successfully added",
-                        "message": "None"
-                    },
-                    "404": {
-                        "description": "subcomponent not found",
-                        "message": "subcomponent [name] not found"
-                    }
-                }
-            }
-        },
         "/addStep": {
             "post": {
                 "description": "Add step to the component with the specified title in the specified project to the server's user instance.",
@@ -184,37 +145,6 @@
                         },
                         "projectName": {
                             "description": "name of the project from which the component is to be deleted.",
-                            "type": "string"
-                        }
-                    }
-                },
-                "responseBody": {
-                    "200": {
-                        "description": "project was successfully deleted",
-                        "message": "None"
-                    }
-                }
-            }
-        },
-        "/deleteSubcomponent": {
-            "post": {
-                "description": "Delete subcomponent from specified component from specified project from server's user instance.",
-                "requestBody": {
-                    "required": "true",
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "body": {
-                        "name": {
-                            "description": "name of the subcomponent to be deleted",
-                            "type": "string"
-                        },
-                        "projectName": {
-                            "description": "name of the project with component from which the subcomponent is to be deleted.",
-                            "type": "string"
-                        },
-                        "compName": {
-                            "description":"name of component that subcomponent is to be deleted from.",
                             "type": "string"
                         }
                     }
@@ -324,41 +254,6 @@
                 }
             }
         },
-        "/modifySubcomponent": {
-            "post": {
-                "description": "Update name and/or decription of subcomponent within specified component in specified project name in server's default user instance.",
-                "requestBody": {
-                    "required": "true",
-                    "headers": {
-                        "Content-Type": "application/json"
-                    },
-                    "body": {
-                        "name": {
-                            "description": "New name of subcomponent.",
-                            "type": "string"
-                        },
-                        "desc": {
-                            "description": "New description of subcomponent.",
-                            "type": "string"
-                        },
-                        "projectName": {
-                            "description": "Name of project containing the component which contains the subcomponent to be modified",
-                            "type": "string"
-                        },
-                        "compName": {
-                            "description":"Name of component which contains the subcomponent to be modified.",
-                            "type": "string"
-                        }
-                    }
-                },
-                "responseBody": {
-                    "200": {
-                        "description": "Subcomponent was successfully modified",
-                        "message": "None"
-                    }
-                }
-            }
-        },
         "/modifyStep": {
             "post": {
                 "description": "Update name and/or decription of step of specified component within specified project name in server's default user instance.",
@@ -456,6 +351,39 @@
                     "404": {
                         "description": "project name not found",
                         "message": "project ${projName} not found"
+                    }
+                }
+            }
+        },
+        "/getSubComponents": {
+            "post": {
+                "description": "get a list of all subcomponents of a specific componenet in a project",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "Name of project containing the component with the desired subcomponents",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description": "Name of component containing the desired subcomponents",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully retrieved the desired subcomponents",
+                        "Content": {
+                            "subComponents": "JSON list of desired subcomponents"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed to find the specified project or component",
+                        "message": "component [compName] not found OR project [name] not found"
                     }
                 }
             }

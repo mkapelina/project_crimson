@@ -39,7 +39,7 @@ class Comp {
 
     removeSubComp(comp) {
         if (comp && comp instanceof Comp) {
-            this.subComps = this.comps.filter(function(val) { return val.name !== comp.name});
+            this.subComps = this.subComps.filter(function(val) { return val.name !== comp.name});
         }
     }
 
