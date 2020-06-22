@@ -1,0 +1,445 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "userAPI",
+        "description": "Interact with and manage Projects, components, sub-components, and steps."
+    },
+    "paths": {
+        "/addProject": {
+            "post": {
+                "description": "Add project to servers user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the project to be added",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "description of project to be added",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "project was successfully added",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/addComponent": {
+            "post": {
+                "description": "Add component to the project with the specified title to the server's user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the component to be added",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "description of component to be added",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "name of project that component is to be added to.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "component was successfully added",
+                        "message": "None"
+                    },
+                    "404": {
+                        "description": "component not found",
+                        "message": "component [name] not found"
+                    }
+                }
+            }
+        },
+        "/addStep": {
+            "post": {
+                "description": "Add step to the component with the specified title in the specified project to the server's user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the step to be added",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "description of step to be added",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "name of project that contains component that step is to be added to.",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description": "name of component that step is to be added to.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "step was successfully added",
+                        "message": "None"
+                    },
+                    "404": {
+                        "description": "step not found",
+                        "message": "step [name] not found"
+                    }
+                }
+            }
+        },
+        "/deleteProject": {
+            "post": {
+                "description": "Delete project from server's user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the project to be deleted",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "project was successfully deleted",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/deleteComponent": {
+            "post": {
+                "description": "Delete component with specified project name from server's user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the component to be deleted",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "name of the project from which the component is to be deleted.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "project was successfully deleted",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/deleteStep": {
+            "post": {
+                "description": "Delete step from specified component from specified project from server's user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "name of the step to be deleted",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "name of the project with component from which the step is to be deleted.",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description":"name of component that step is to be deleted from.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "project was successfully deleted",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/modifyProject": {
+            "post": {
+                "description": "Update name and/or decription of project in server's default user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "New name of project.",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "New description of project.",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "name of project to be modified",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "project was successfully modified",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/modifyComponent": {
+            "post": {
+                "description": "Update name and/or decription of component with specified project name in server's default user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "New name of component.",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "New description of component.",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "Name of project containing the component to be modified",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description":"Name of component to be modified.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "component was successfully modified",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/modifyStep": {
+            "post": {
+                "description": "Update name and/or decription of step of specified component within specified project name in server's default user instance.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "New name of step.",
+                            "type": "string"
+                        },
+                        "desc": {
+                            "description": "New description of step.",
+                            "type": "string"
+                        },
+                        "projectName": {
+                            "description": "Name of project containing the component which contains the step to be modified",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description":"Name of component which contains the step to be modified.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Step was successfully modified",
+                        "message": "None"
+                    }
+                }
+            }
+        },
+        "/getProject": {
+            "post": {
+                "description": "Returns project representation in JSON format.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "Name of project.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully converted project into JSON format.",
+                        "message": "None"
+                    },
+                    "400": {
+                        "description": "Project name not specified in repsonse body.",
+                        "message": "request body must include a project name"
+                    },
+                    "404": {
+                        "description": "Project name not found.",
+                        "message": "project ${projName} not found"
+                    }
+                }
+            }
+        },
+        "/getComponent": {
+            "post": {
+                "description": "Returns component representation in JSON format.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "Name of project containing this component.",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description":"Name of component.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully converted component object to JSON.",
+                        "message": "None"
+                    },
+                    "400": {
+                        "description": "No project name specified in the request body.",
+                        "message": "request body must include a project name"
+                    },
+                    "404": {
+                        "description": "project name not found",
+                        "message": "project ${projName} not found"
+                    }
+                }
+            }
+        },
+        "/getSubComponents": {
+            "post": {
+                "description": "get a list of all subcomponents of a specific componenet in a project",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "Name of project containing the component with the desired subcomponents",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description": "Name of component containing the desired subcomponents",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully retrieved the desired subcomponents",
+                        "Content": {
+                            "subComponents": "JSON list of desired subcomponents"
+                        }
+                    },
+                    "404": {
+                        "description": "Failed to find the specified project or component",
+                        "message": "component [compName] not found OR project [name] not found"
+                    }
+                }
+            }
+        },
+        "/getSteps": {
+            "post": {
+                "description": "Returns step representation in JSON format.",
+                "requestBody": {
+                    "required": "true",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": {
+                        "name": {
+                            "description": "Name of project.",
+                            "type": "string"
+                        },
+                        "compName": {
+                            "description":"Name of component which contains the step.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully converted step object to JSON.",
+                        "message": "None"
+                    },
+                    "400": {
+                        "description": "No project name specified in the request body.",
+                        "message": "request body must include a project name"
+                    },
+                    "404": {
+                        "description": "project name not found",
+                        "message": "project ${projName} not found"
+                    }
+                }
+            }
+        },
+        "/getProjects": {
+            "get": {
+                "description": "Retrieves all projects associated with the server user instance",
+                "responseBody": {
+                    "200": {
+                        "description": "Succesfully retrieved user's projects.",
+                        "message": "None",
+                        "Content": {
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+
+   

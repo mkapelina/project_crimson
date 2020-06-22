@@ -4,11 +4,36 @@
 }
 
 .component-list {
-    list-style-type: none;
+    list-style-type: decimal;
 }
 
-.comp-li * {
-    display: inline-block;
+.comp-li-btn {
+    display: inline;
+    border: 0px;
+    background-color: inherit;
+}
+
+.comp-li-btn:focus {
+    outline: none;
+}
+
+.comp-li-btn-r {
+    display: inline;
+    border: 0px;
+    background-color: inherit;
+    transform: rotate(90deg);
+}
+
+.comp-li-btn-r:focus {
+    outline: none;
+}
+
+.comp-options {
+    float: right;
+}
+
+.step-options {
+    float: right;
 }
 
 .add-comp-popup {

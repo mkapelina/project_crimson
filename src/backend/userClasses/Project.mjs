@@ -18,7 +18,7 @@ class Project {
                 if (copy[i].name === comp.name) {
                     return copy[i];
                 }
-                copy.concat(copy[i].subComps)
+                copy = copy.concat(copy[i].subComps);
             }
         }
         return null;
