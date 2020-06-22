@@ -6,18 +6,15 @@ import {
     CardTitle,
     CardText,
     CardBody,
-    Button,
     CardHeader,
-    CardFooter,
     UncontrolledDropdown,
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
     Row,
     Container,
-    ButtonDropdown,
     UncontrolledButtonDropdown,
-    Progress, 
+    Progress,
     ListGroup,
     ListGroupItem,
     Badge
@@ -48,12 +45,11 @@ class LandingPage extends Component {
                     <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
                     <h5> Project Crimson</h5>
                 </div>
-
+                <div className="project-list-header">
+                    <p>Your Portfolio</p>
+                </div>
                 <div className="all-projects">
-                    <div className="all-projects-ghost">
-                        <h3>Your Portfolio</h3>
-                        <ProjectCards user="none" />
-                    </div>
+                    <ProjectCards user="none" />
                 </div>
                 <div className="main-page-bottom">
 
@@ -95,39 +91,6 @@ class ProjectCards extends Component {
         }
     }
 
-    // format a single projects json string into proper html/bootstrap card view
-    formatProject(project) {
-        return (
-            <Card className='project-card'>
-                <CardHeader>
-                    <UncontrolledButtonDropdown className="card-menu" size="sm">
-                        <DropdownToggle className="card-menu-dropdown-button" color="white">
-                            <img src={threeDotIcon} alt="menu"/>
-                        </DropdownToggle>
-                        <DropdownMenu>
-                            <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem divider />
-                            <DeleteProjectConfirm
-                                    project={project["name"]}
-                                    onDeleteProj={this.refreshProjList} />
-                        </DropdownMenu>
-                    </UncontrolledButtonDropdown>
-                    <Link to={`/${project.name}`}>
-                        <CardTitle>{project["name"]}</CardTitle>
-                    </Link>
-                </CardHeader>
-                <CardBody className="card-body">
-                    <CardText>{project["description"]}</CardText>
-                </CardBody>
-                    <ListGroup className="card-footer-list" flush>
-                        <ListGroupItem id="component-tally" className="card-footer-list-items">Components: <Badge pill>{project["components"].length}</Badge></ListGroupItem>
-                        <ListGroupItem id="project-progress-bar" className="card-footer-list-items"> <Progress animated value={100} color="success">100% Complete</Progress></ListGroupItem>
-                    </ListGroup>
-            </Card>
-        );
-
-    }
-
     render() {
         return (
             <Container className="mt-3" fluid >
@@ -136,21 +99,29 @@ class ProjectCards extends Component {
                         onAddProj={this.refreshProjList}
                         projNames={this.state.projects.projects.map(project => project.name)} />
                     }
-                    {!this.state.isLoading && this.state.projects.projects.map(project => (
-                        <div key={project.name}>{this.formatProject(project)}</div>))
-                    }
+                    {!this.state.isLoading && this.state.projects.projects.map(project =>
+                        <ProjectView
+                            key={project.name}
+                            project={project}
+                            onChange={this.refreshProjList} />)}
                 </Row>
             </Container>
         );
     }
 }
 
-class DeleteProjectConfirm extends Component {
+
+class ProjectView extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { willDelete: false };
+        this.state = {
+            willDelete: false,
+        }
+        this.deleteProject = this.deleteProject.bind(this);
     }
+
+    toggleWillDelete = () => this.setState({ willDelete: !this.state.willDelete });
 
     deleteProject(projName) {
         var body = { name: projName }
@@ -164,22 +135,44 @@ class DeleteProjectConfirm extends Component {
         this.toggleWillDelete();
         fetch('http://localhost:9000/deleteProject', req)
             .then(res => res.json())
-            .then(res => this.props.onDeleteProj(res));
+            .then(res => this.props.onChange(res));
     }
-
-    toggleWillDelete = () => this.setState({ willDelete: !this.state.willDelete });
 
     render() {
         return (
-            <div className='delete-project'>
-                <Button onClick={this.toggleWillDelete} color="white">Delete Project</Button>
-                {this.state.willDelete && <div className='delete-project-popup'>
-                    <p>Are you sure you want to delete {this.props.project}?</p>
-                    <button onClick={this.toggleWillDelete}>No</button>
-                    <button onClick={() => this.deleteProject(this.props.project)}>Yes</button>
-                </div>}
-            </div>
-        )
+            <Card className='project-card'>
+                <CardHeader>
+                    <UncontrolledButtonDropdown className="card-menu" size="sm" direction='left'>
+                        <DropdownToggle className="card-menu-dropdown-button" color="white">
+                            <img src={threeDotIcon} alt="menu" />
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            <DropdownItem>Edit</DropdownItem>
+                            <DropdownItem onClick={this.toggleWillDelete}>Delete</DropdownItem>
+                        </DropdownMenu>
+                    </UncontrolledButtonDropdown>
+                    {this.state.willDelete && <div className='delete-project-popup'>
+                        <p>Are you sure you want to delete {this.props.project.name}?</p>
+                        <button className='delete-project-popup-no' onClick={this.toggleWillDelete}>No</button>
+                        <button className='delete-project-popup-yes' onClick={() => this.deleteProject(this.props.project.name)}>Yes</button>
+                    </div>}
+                    <Link to={`/${this.props.project.name}`}>
+                        <CardTitle>{this.props.project.name}</CardTitle>
+                    </Link>
+                </CardHeader>
+                <CardBody className="card-body">
+                    <CardText>{this.props.project.description}</CardText>
+                </CardBody>
+                <ListGroup className="card-footer-list" flush>
+                    <ListGroupItem id="component-tally" className="card-footer-list-items">
+                        Components: <Badge pill>{this.props.project.components.length}</Badge>
+                    </ListGroupItem>
+                    <ListGroupItem id="project-progress-bar" className="card-footer-list-items">
+                        <Progress animated value={100} color="success">100% Complete</Progress>
+                    </ListGroupItem>
+                </ListGroup>
+            </Card>
+        );
     }
 }
 
@@ -189,14 +182,10 @@ class AddProjectCard extends Component {
         this.state = { showAddProj: false };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCancel = this.handleCancel.bind(this);
-        this.toggleAddProj = this.toggleAddProj.bind(this);
     }
 
     // for add project form
-    toggleAddProj() {
-        this.setState({ showAddProj: !this.state.showAddProj });
-    }
+    toggleAddProj = () => this.setState({ showAddProj: !this.state.showAddProj });
 
     // for add project form
     handleSubmit(input) {
@@ -213,9 +202,7 @@ class AddProjectCard extends Component {
     }
 
     // for add project form
-    handleCancel() {
-        this.toggleAddProj();
-    }
+    handleCancel = () => this.toggleAddProj();
 
     render() {
         return (
