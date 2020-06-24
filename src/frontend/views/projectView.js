@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { ListGroup, ListGroupItem, ListGroupItemHeading, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Progress } from 'reactstrap';
 
 import expandArrow from './icons/expandArrowMenu.png'
 import dotMenu from './icons/threeDotMenu.png'
@@ -12,8 +12,27 @@ class ProjectView extends Component {
         this.state = {
             project: {},
             isLoading: true,
+            isCalculating: false,
         }
         this.callGetProjectAPI = this.callGetProjectAPI.bind(this);
+    }
+
+    refreshProgressBar = (compName, step, isComplete) => {
+        this.setState({ isCalculating: true });
+        var body = {
+            'projectName': this.state.project.name,
+            'compName': compName,
+            'name': step.name,
+            'isCompleted': isComplete
+        };
+
+        fetch('http://localhost:9000/updatePercentComplete', {
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => res.status === 200 ?
+            this.setState({ project: res, isCalculating: false }) : console.log(res.message));
+
     }
 
     callGetProjectAPI() {
@@ -41,8 +60,20 @@ class ProjectView extends Component {
                 {!this.state.isLoading &&
                     <div>
                         <h1>Now viewing project '{this.state.project.name}'</h1>
+                        <h2>Description: {this.state.project.description}</h2>
+                        <div className='project-progress'>
+                            <Progress
+                                animated
+                                value={this.state.project.pComplete < 0.92 ? Math.round(this.state.project.pComplete * 100) + 8 : Math.round(this.state.project.pComplete * 100)}
+                                color="success">{Math.round(this.state.project.pComplete * 100)}%
+                            </Progress>
+                        </div>
                         <h3>Components:</h3>
-                        <ComponentListView project={this.state.project} onChange={this.refreshCompList} />
+                        <ComponentListView
+                            project={this.state.project}
+                            isCalculating={this.state.isCalculating}
+                            onCompletionChange={this.refreshProgressBar}
+                            onChange={this.refreshCompList} />
                     </div>
                 }
             </div>
@@ -76,6 +107,8 @@ class ComponentListView extends Component {
                         key={comp.name}
                         project={this.props.project}
                         comp={comp}
+                        isCalculating={this.props.isCalculating}
+                        onCompletionChange={this.props.onCompletionChange}
                         onChange={this.props.onChange} />)}
                 {this.state.isAdding && <ComponentView
                     project={this.props.project}
@@ -138,17 +171,18 @@ class ComponentView extends Component {
         const res = await fetch('http://localhost:9000/getComponent', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
-            body: JSON.stringify({ 'name': this.props.project.name, 'compName': this.state.name }) });
+            body: JSON.stringify({ 'name': this.props.project.name, 'compName': this.state.name })
+        });
 
         const json = await res.json();
-        
-        if (json.status === 200) {
+
+        if (json.status === 200 && (!this.props.comp || this.props.comp.name !== this.state.name)) {
             this.setState({ isValid: false, validMsg: "Component names must be unique" });
             return;
         }
         this.handleSubmit();
     }
-    
+
     handleSubmit() {
         var name = this.state.name;
         var desc = this.state.desc;
@@ -228,6 +262,8 @@ class ComponentView extends Component {
         this.callGetStepsAPI();
     }
 
+    handleCompletionChange = (step, isComplete) => this.props.onCompletionChange(this.state.name, step, isComplete);
+
     render() {
         var comp = this.props.comp;
         if (comp) {
@@ -241,7 +277,7 @@ class ComponentView extends Component {
                 </button>}
                 {this.state.isEditing ? <input
                     type="text"
-                    defaultValue={comp ? comp.name : ''}
+                    defaultValue={this.state.name}
                     placeholder="Name"
                     onChange={this.handleNameChange} /> : comp.name}
                 {!this.state.isEditing && <div className="comp-options">
@@ -260,13 +296,18 @@ class ComponentView extends Component {
                     </UncontrolledButtonDropdown>
                 </div>}
             </ListGroupItemHeading>
-            <ListGroupItemText>
+            <div className='comp-details'>
                 Description: {this.state.isEditing ? <input
                     type="text"
-                    defaultValue={comp ? comp.description : ''}
+                    defaultValue={this.state.description}
                     placeholder="Description"
                     onChange={this.handleDescChange} /> : comp.description}
-            </ListGroupItemText>
+                {!this.state.isEditing && <Progress
+                    animated
+                    value={comp.pComplete < 0.92 ? Math.round(comp.pComplete * 100) + 8 : Math.round(comp.pComplete * 100)}
+                    color="success">{Math.round(comp.pComplete * 100)}%
+                </Progress>}
+            </div>
             {this.state.isEditing && <button className='done-editing' onClick={this.checkName}>Done</button>}
             {this.state.isEditing && <button className='cancel-editing' onClick={this.handleCancel}>Cancel</button>}
             {!this.state.isValid && <p>{this.state.validMsg}</p>}
@@ -296,6 +337,8 @@ class ComponentView extends Component {
                             step={step}
                             comp={comp}
                             project={this.props.project}
+                            isCalculating={this.props.isCalculating}
+                            onCompletionChange={this.handleCompletionChange}
                             onChange={this.refreshStepList} />)}
                     {this.state.isAddingStep && <StepView
                         project={this.props.project}
@@ -321,7 +364,8 @@ class StepView extends Component {
             isEditing: false || this.props.isEditing,
             name: this.props.step ? this.props.step.name : "",
             desc: this.props.step ? this.props.step.description : "",
-            isValid: true
+            isValid: true,
+            isCompleted: this.props.step ? this.props.step.completed : false
         };
         this.DeleteStep = this.DeleteStep.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -386,6 +430,11 @@ class StepView extends Component {
 
     refreshStepList = (res) => this.props.onChange(res);
 
+    handleCompletionChange = (step, isCompleted) => {
+        this.setState({ isCompleted: !this.state.isCompleted });
+        this.props.onCompletionChange(step, !isCompleted)
+    }
+
     render() {
         var step = this.props.step;
         return (<ListGroupItem>
@@ -411,13 +460,21 @@ class StepView extends Component {
                     </UncontrolledButtonDropdown>}
                 </div>
             </ListGroupItemHeading>
-            <ListGroupItemText>
+            <div className='step-details'>
                 Description: {this.state.isEditing ? <input
                     type="text"
                     defaultValue={step ? step.description : ''}
                     placeholder='Description'
                     onChange={this.handleDescChange} /> : step.description}
-            </ListGroupItemText>
+                {!this.state.isEditing && (!this.props.isCalculating &&
+                    <input
+                        type='checkbox'
+                        name={this.state.isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+                        checked={this.state.isCompleted}
+                        onChange={() => this.handleCompletionChange(step, this.state.isCompleted)}
+                        className='is-step-completed'
+                    /> )}
+            </div>
             {this.state.isEditing && <button className='done-editing' onClick={this.handleSubmit}>Done</button>}
             {this.state.isEditing && <button className='cancel-editing' onClick={this.handleCancel}>Cancel</button>}
             {!this.state.isValid && <p>Invalid input, you cannot have two components of the same name or empty fields for name or description</p>}

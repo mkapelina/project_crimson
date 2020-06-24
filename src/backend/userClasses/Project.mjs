@@ -6,6 +6,7 @@ class Project {
     constructor(name, desc) {
         this.name = name;
         this.desc = desc;
+        this.pComplete = 0;
         this.comps = [];
     }
 
@@ -37,12 +38,31 @@ class Project {
         }
     }
 
+    calcCompletionRate() {
+        let numCompleted = 0
+        let totalNum = 0;
+        this.comps.forEach(function(comp) {
+            comp.steps.forEach(function(step) {
+                totalNum++;
+                if (step.isComplete) {
+                    numCompleted++;
+                }
+            });
+        });
+        if (totalNum === 0) {
+            return 0;
+        }
+        return numCompleted/totalNum;
+    }
+
     jsonify() {
         var comps = this.comps.map(comp => comp.jsonify())
+        this.pComplete = this.calcCompletionRate();
         var json = {
             "name" : this.name,
             "description" : this.desc,
-            "components" : comps
+            "components" : comps,
+            'pComplete' : this.pComplete
         }
         return json;
     }
