@@ -299,7 +299,7 @@ class ComponentView extends Component {
             <div className='comp-details'>
                 Description: {this.state.isEditing ? <input
                     type="text"
-                    defaultValue={this.state.description}
+                    defaultValue={this.state.desc}
                     placeholder="Description"
                     onChange={this.handleDescChange} /> : comp.description}
                 {!this.state.isEditing && <Progress
