@@ -100,9 +100,7 @@ class LandingPage extends Component {
                         </Row>
                     </Container>
                 </div>
-                <div className="main-page-bottom">
-                    {/* included to style the bottom of the page */}
-                </div>
+                <div className="main-page-bottom"/> {/* included to style the bottom of the page */}
             </div>
         );
     }
@@ -370,11 +368,11 @@ class ComponentListPopover extends Component {
         return (
             <div className='comp-list-popup'>
                 <div onMouseEnter={this.openComponentView} onMouseLeave={this.closeComponentView}
-                    id={project.name + '-comp-listview'}>
+                    id={project.name.replace(/ /g, '-') + '-comp-listview'}>
                     Components: <Badge pill>{project.components.length}</Badge>
                 </div>
                 <Popover placement='left' isOpen={this.state.isShowingComponents}
-                    target={project.name + '-comp-listview'} popperClassName='comp-listview-popover'>
+                    target={project.name.replace(/ /g, '-') + '-comp-listview'} popperClassName='comp-listview-popover'>
                     <PopoverHeader>Components:</PopoverHeader>
                     <PopoverBody>
                         {project.components.length === 0 ? <p>This project has no components</p> :
