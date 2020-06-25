@@ -71,7 +71,8 @@ class ProjectView extends Component {
 
     refreshCompList = (res) => this.callGetProjectAPI();
 
-    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing });
+    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing }, 
+        () => this.state.isEditing && this.nameInput.focus());
 
     modifyProjectName = async () => {
         let body = {
@@ -102,9 +103,6 @@ class ProjectView extends Component {
     componentDidMount() {
         this.callGetProjectAPI();
     }
-
-   
-
 
     render() {
         return (
@@ -147,7 +145,8 @@ class ProjectView extends Component {
                             defaultValue={this.state.projectName}
                             placeholder="Project Name"
                             onKeyDown={this.checkKey}
-                            onChange={this.handleNameChange} 
+                            onChange={this.handleNameChange}
+                            ref={input => this.nameInput = input}
                             />}
                         <div className='project-progress'>
                             <Progress
