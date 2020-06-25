@@ -16,7 +16,7 @@
   },
   "proxy": "http://localhost:9000/",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts start\" \"node ./src/backend/server.js\"",
     "client": "react-scripts start",
     "server": "node ./src/backend/server.js",
     "build": "react-scripts build",
