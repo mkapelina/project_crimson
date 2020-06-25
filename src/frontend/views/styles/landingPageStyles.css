@@ -16,6 +16,7 @@
   display: table;
   width: 100%;
   table-layout: fixed;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .main-page-top * {
@@ -71,10 +72,14 @@
   flex-direction: row; */
   text-align: center;
   padding-top: 5%;
-  overflow-x: scroll;
-  overflow-y: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
   height: 30rem;
   width: 100%; 
+  
+}
+.all-projects::-webkit-scrollbar {
+  display: none!important;
 }
 
 .all-projects-ghost {
@@ -163,6 +168,7 @@
   border-top: 2px solid darkgrey;
   border-bottom: 2px solid darkgrey;
   border-radius: 4px;
+  
 }
 
 .horizontal-scrollable > .card-row {
@@ -305,4 +311,6 @@
   background-color: #011627;
   /* padding-bottom: 5%; */
   width: 100%;
+  box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.2), 0 -6px 20px 0 rgba(0, 0, 0, 0.19);
+
 }

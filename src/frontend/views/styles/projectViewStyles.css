@@ -1,6 +1,95 @@
 .project-view-main {
     font-size: large;
-    background-color: palegoldenrod;
+    background-color: #f1f1f1;
+}
+
+.project-view-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  height: 5rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+.search-bar {
+  align-self: center;
+  justify-self: center;
+}
+
+.drop-down {
+  align-self: flex-start;
+}
+
+.logo {
+  align-self: flex-start;
+}
+
+.project-view-footer {
+  display: flex;
+  height: 20rem;
+  border: solid red;
+  margin-top: 20rem;
+  background-color: #011627;
+}
+
+.project-view-banner {
+  
+}
+
+.project-view-banner-jumbotron {
+  background-color: #A3F5EA!important;
+  border-bottom: solid #FFD6E0!important;
+}
+
+.project-view-banner h1 {
+text-align: center!important;
+}
+
+.project-view-banner p {
+text-align: center!important;
+
+}
+
+.project-view-content {
+  display: flex;
+  flex-direction: column;
+}
+.project-title {
+  background-color: #f1f1f1!important;
+  color: black!important;
+  outline: none!important;
+  height: 4.5rem;
+  width: fit-content;
+  font-size: 2.5rem;
+  justify-self: center;
+  align-self: center;
+  display: flex;
+}
+
+.project-title-input {
+  height: 4.5rem;
+  font-size: 2.5rem;
+  width: fit-content;
+  justify-self: center;
+  align-self: center;
+  text-align: center;
+  background-color: #f1f1f1;
+  font-style: bold;
+  border-radius: 7px!important;
+
+}
+
+.component-title-button {
+  max-width: fit-content!important;
+  min-width: fit-content!important;
+  
+}
+
+.component-title-input {
+  width: 15rem;
+  height: 3rem;
+
 }
 
 .component-list {
