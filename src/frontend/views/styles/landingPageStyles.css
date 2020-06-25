@@ -2,91 +2,92 @@
   font-family: Roboto, Hevetica, sans-serif;
   background-color: #f1f1f1;
   color: #011627;
-  /* padding-left: 5%;
-  padding-right: 5%; */
-  /* overflow-y: auto; */
 }
-
 
 .main-page-top {
   position: relative;
   height: 64px;
   background-color: white;
-  padding-bottom: 5%;
-  display: table;
+  padding: 10px 10px 2px 2px;
   width: 100%;
-  table-layout: fixed;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
-.main-page-top * {
-  display: table-cell;
-  text-align: right;
+.nav-drop-down {
+  float: left;
 }
 
 .search-bar {
-  text-align: left;
+  float: left;
+  margin-left: 35%;
+  border: none;
+  border-bottom: 1px solid lightgray;
 }
 
-.drop-down-button {
+.logo {
+  float: right;
+}
+
+.nav-drop-down-button {
   color: red!important;
   background-color: white!important;
   border: none!important;
 }
-.drop-down-button:focus {
+
+.nav-drop-down-button:focus {
   box-shadow: none!important;
 }
-.drop-down-button:hover {
+
+.nav-drop-down-button:hover {
   background-color: #f1f1f1!important;
 }
 
-.drop-down-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
+.nav-drop-down:hover .drop-down-content {
   display: block;
 }
 
-.drop-down-content a:hover {background-color: #f1f1f1}
-
-.drop-down:hover .drop-down-content {
-  display: block;
-}
-
-.drop-down:hover .drop-button {
+.nav-drop-down:hover .drop-button {
   background-color: #41EAD4;
 }
 
-.drop-down-content {
-  display: none;
+.project-list-header {
+  display: flex;
+  justify-content: center;
+  font-size: 50px;
+  font-weight: 700;
+  color: #000055;
+  border-bottom: 2px solid #3e3eff;
+  box-shadow: 0 4px 8px 0;
+}
+
+.search-suggestions {
+  margin-top: 2rem;
+  margin-left: 35%;
   position: absolute;
-  background-color: #f9f9f9!important;
-  min-width: 500px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  display: block;
+  height: auto;
+  width: 300px;
+  background-color: white;
+  border: 1px solid grey;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.search-suggestions p {
+  border-bottom: 1px solid lightgray;
+  padding: 3px;
+  margin-bottom: 0px;
+  overflow: hidden;
 }
 
 .all-projects {
-  /* display: flex;
-  flex-flow: row wrap!important;
-  flex-direction: row; */
+  display: flex;
   text-align: center;
   padding-top: 5%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  height: 30rem;
-  width: 100%; 
-  
-}
-.all-projects::-webkit-scrollbar {
-  display: none!important;
-}
-
-.all-projects-ghost {
-  display: flex;
-  height: fixed;
-  width: 500%;
   overflow-x: scroll;
+  overflow-y: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .addProj-btn {
@@ -101,68 +102,9 @@
   position: relative;
 }
 
-.addProj-btn:active {
-  opacity: 1;
-}
-
-.addProj-popup {
-  position: relative;
-  text-align: center;
-  width: 100%;
-}
-
-.form-popup {
-  position: fixed;
-  left: 45%;
-  top: 5%;
-  transform: translate(-45%, 5%);
-  border: 2px solid darkgray;
-  z-index: 9;
-}
-
-.form-container {
-  max-width: 300px;
-  padding: 20px;
-  color: darkblue;
-  background-color: blanchedalmond;
-}
-
-.form-container input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 22px 0;
-  border: none;
-  background: darkslategray;
-}
-
-.form-container .btn-cancel {
-  background-color: blueviolet;
-  color: black;
-  padding: 12px 20px;
-  border: none;
-  width: 35%;
-  margin-bottom: 10px;
-  opacity: 0.8;
-  border-radius: 4px;
-}
-
-.form-container .btn-submit {
-  background-color: blueviolet;
-  margin-left: 30%;
-  color: black;
-  padding: 12px 20px;
-  border: none;
-  width: 35%;
-  margin-bottom: 10px;
-  opacity: 0.8;
-  border-radius: 4px;
-}
-
 .all-project-cards {
   position: relative;
   padding: 5px;
-  /* margin-right: 10%;
-  margin-left: 10%; */
   width: 100%;
   height: 40%;
   border-top: 2px solid darkgrey;
@@ -171,18 +113,11 @@
   
 }
 
-.horizontal-scrollable > .card-row {
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
 .project-card {
-  display: flex;
-  width: 20rem;
-  height: 20rem;
+  min-width: 17rem!important;
+  width: 17rem;
+  height: 17rem;
   margin: 1rem;
-  display: inline-block;
-  float: none;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 7px!important;
 }
@@ -192,12 +127,14 @@
 }
 
 .add-project-card {
+  align-items: center;
   background-color: #F1F1F1!important;
   justify-content: center;
   border: 1px solid black;
   margin: 1rem;
-  width: 16rem;
-  height: 16rem;
+  min-width: 17rem!important;
+  width: 17rem;
+  height: 17rem;
   white-space: normal;
 }
 
@@ -234,6 +171,22 @@
   z-index: 9;
 }
 
+.delete-project-popup-no {
+  display: inline-block;
+  margin: 5px;
+  margin-right: 50px;
+}
+
+.delete-project-popup-yes {
+  display: inline-block;
+  margin: 5px;
+  margin-left: 50px;
+}
+
+.comp-listview-popover {
+  width: 80rem;
+}
+
 .card-menu {
   width: 10px;
   height: 100%;
@@ -242,9 +195,6 @@
   color: grey!important;
   float: right;
   position: fixed;
-  /* overflow-x: auto; */
-  /* border: black solid;
-  border-bottom: red solid; */
   
 }
 .card-menu:focus {
@@ -261,27 +211,35 @@
   box-shadow: none!important;
 }
 
-.card-body {
-  padding-top: 0%!important;
+.project-card-body {
+  padding-top: 4%!important;
   overflow-y: auto;
   text-align: center;
+  -ms-overflow-style: none!important;
   
 }
 
-.card-body::-webkit-scrollbar {
+.project-card-body::-webkit-scrollbar {
   display: none!important;
 }
 
-.card-body {
-  -ms-overflow-style: none!important;
+.edit-name {
+  margin-right: 4%;
+  margin-bottom: 6px;
+  text-align: center;
 }
 
-.card-footer {
-  border: red solid;
-  border-top: blue solid;
-  height: 40%!important;
-  overflow: auto;
+.edit-desc {
+  width: 90%;
+  height: 90%;
+  resize: none;
+  text-align: center;
 }
+
+.edit-project-options {
+  height: 23%!important;
+}
+
 .card-footer-list {
   border: none;
 }
@@ -307,9 +265,8 @@
 
 .main-page-bottom {
   position: relative;
-  height: 500px;
-  background-color: #011627;
-  /* padding-bottom: 5%; */
+  height: 435px;
+  background-color: #00002f;
   width: 100%;
   box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.2), 0 -6px 20px 0 rgba(0, 0, 0, 0.19);
 
