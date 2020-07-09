@@ -232,7 +232,8 @@ class ComponentView extends Component {
 
     toggleIsShowing = () => this.setState({ isShowing: !this.state.isShowing });
 
-    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing });
+    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing },
+        () => this.state.isEditing && this.nameInput.focus());
 
     toggleIsAddingStep = () => this.setState({ isAddingStep: !this.state.isAddingStep });
 
@@ -370,6 +371,7 @@ class ComponentView extends Component {
                         placeholder="Component Name"
                         onKeyDown={this.checkKey}
                         onChange={this.handleNameChange} 
+                        ref={input => this.nameInput = input}
                         />
                         }
                 {!this.state.isEditing && <div className="comp-options">
@@ -464,11 +466,14 @@ class StepView extends Component {
         };
     }
 
-    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing });
+    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing },
+        () => this.state.isEditing && this.nameInput.focus());
 
     handleNameChange = (e) => this.setState({ name: e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) });
 
     handleDescChange = (e) => this.setState({ desc: e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) });
+
+    checkKey = (e) => e.key === 'Enter' && this.handleSubmit();
 
     handleSubmit = () => {
         let name = this.state.name
@@ -532,11 +537,20 @@ class StepView extends Component {
         let step = this.props.step;
         return (<ListGroupItem>
             <ListGroupItemHeading>
-                {this.state.isEditing ? <input
-                    type="text"
-                    defaultValue={step ? step.name : ''}
-                    placeholder='Name'
-                    onChange={this.handleNameChange} /> : step.name}
+                    {!this.state.isEditing ?  
+                        <Button  onClick={this.toggleIsEditing}>
+                            <h1>{this.state.name}</h1>
+                        </Button> :
+                        <input
+                        className="step-title-input"
+                        type="text"
+                        defaultValue={this.state.name}
+                        placeholder="Step Name"
+                        onKeyDown={this.checkKey}
+                        onChange={this.handleNameChange} 
+                        ref={input => this.nameInput = input}
+                        />
+                        }
                 <div className="step-options">
                     {!this.state.isEditing && <UncontrolledButtonDropdown direction="left">
                         <DropdownToggle>
@@ -558,6 +572,7 @@ class StepView extends Component {
                     type="text"
                     defaultValue={step ? step.description : ''}
                     placeholder='Description'
+                    onKeyDown={this.checkKey}
                     onChange={this.handleDescChange} /> : step.description}
                 {!this.state.isEditing && (!this.props.isCalculating &&
                     <input
