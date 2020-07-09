@@ -3,7 +3,6 @@ import {
     ListGroup,
     ListGroupItem,
     ListGroupItemHeading,
-    ListGroupItemText,
     UncontrolledButtonDropdown,
     DropdownToggle,
     DropdownMenu,
@@ -36,6 +35,13 @@ class ProjectView extends Component {
         }
 
     }
+
+    debug = (res) => {
+        console.log('response: ');
+        console.log(res);
+        console.log('state: ');
+        console.log(this.state.project);
+    }
     
     refreshProgressBar = (compName, step, isComplete) => {
         this.setState({ isCalculating: true });
@@ -51,7 +57,7 @@ class ProjectView extends Component {
             method: 'POST',
             body: JSON.stringify(body)
         }).then(res => res.json()).then(res => res.status === 200 ?
-            this.setState({ project: res, isCalculating: false }) : console.log(res.message));
+            this.setState({ project: res, isCalculating: false }, this.debug(res)) : console.log(res.message));
 
     }
 
@@ -151,7 +157,7 @@ class ProjectView extends Component {
                         <div className='project-progress'>
                             <Progress
                                 animated
-                                value={this.state.project.pComplete < 0.92 ? Math.round(this.state.project.pComplete * 100) + 8 : Math.round(this.state.project.pComplete * 100)}
+                                value={this.state.project.pComplete < 0.08 ? Math.round(this.state.project.pComplete * 100) + 8 : Math.round(this.state.project.pComplete * 100)}
                                 color="success">{Math.round(this.state.project.pComplete * 100)}%
                             </Progress>
                         </div>
@@ -197,8 +203,8 @@ class ComponentListView extends Component {
                         project={this.props.project}
                         comp={comp}
                         isCalculating={this.props.isCalculating}
-                        onCompletionChange={this.props.onCompletionChange}
-                        onChange={this.props.onChange} />)}
+                        onCompletionChange={(compName, step, isComplete) => this.props.onCompletionChange(compName, step, isComplete)}
+                    onChange={this.props.onChange} />)}
                 {this.state.isAdding && <ComponentView
                     project={this.props.project}
                     comp={undefined}
@@ -223,6 +229,7 @@ class ComponentView extends Component {
             desc: this.props.comp ? this.props.comp.description : "",
             isValid: true,
             validMsg: "valid",
+            isCalculating: this.props.isCalculating,
             subComps: this.props.comp ? this.props.comp.subComponents : [],
             isAddingSubComp: false,
             steps: this.props.comp ? this.props.comp.steps : [],
@@ -347,7 +354,7 @@ class ComponentView extends Component {
         this.callGetStepsAPI();
     }
 
-    handleCompletionChange = (step, isComplete) => this.props.onCompletionChange(this.state.name, step, isComplete);
+    handleCompletionChange = (name, step, isComplete) => this.props.onCompletionChange(name, step, isComplete);
 
     render() {
         let comp = this.props.comp;
@@ -399,7 +406,7 @@ class ComponentView extends Component {
                     onKeyDown={this.checkKey} /> : comp.description}
                 {!this.state.isEditing && <Progress
                     animated
-                    value={comp.pComplete < 0.92 ? Math.round(comp.pComplete * 100) + 8 : Math.round(comp.pComplete * 100)}
+                    value={comp.pComplete < 0.08 ? Math.round(comp.pComplete * 100) + 8 : Math.round(comp.pComplete * 100)}
                     color="success">{Math.round(comp.pComplete * 100)}%
                 </Progress>}
             </div>
@@ -410,12 +417,14 @@ class ComponentView extends Component {
                 <h6>Sub-Components:</h6>
                 <ListGroup>
                     {this.state.subComps.length === 0 ? <p>No Sub-Components added, click add Sub-Component to add a Sub-Component</p> :
-                        this.state.subComps.map(subComp => <ComponentView
+                        comp.subComponents.map(subComp => <ComponentView
                             key={subComp.name}
                             project={this.props.project}
                             comp={subComp}
                             parent={comp}
-                            onChange={this.refreshSubCompList} />)}
+                            isCalculating={this.props.isCalculating}
+                            onChange={this.refreshSubCompList}
+                            onCompletionChange={(compName, step, isComplete) => this.handleCompletionChange(compName, step, isComplete)} />)}
                     {this.state.isAddingSubComp && <ComponentView
                         project={this.props.project}
                         comp={undefined}
@@ -528,9 +537,9 @@ class StepView extends Component {
 
     refreshStepList = (res) => this.props.onChange(res);
 
-    handleCompletionChange = (step, isCompleted) => {
+    handleCompletionChange = (name, step, isCompleted) => {
         this.setState({ isCompleted: !this.state.isCompleted });
-        this.props.onCompletionChange(step, !isCompleted)
+        this.props.onCompletionChange(name, step, !isCompleted);
     }
 
     render() {
@@ -579,7 +588,7 @@ class StepView extends Component {
                         type='checkbox'
                         name={this.state.isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
                         checked={this.state.isCompleted}
-                        onChange={() => this.handleCompletionChange(step, this.state.isCompleted)}
+                        onChange={() => this.handleCompletionChange(this.props.comp.name, step, this.state.isCompleted)}
                         className='is-step-completed'
                     /> )}
             </div>
