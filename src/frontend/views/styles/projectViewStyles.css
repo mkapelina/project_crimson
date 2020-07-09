@@ -26,7 +26,6 @@
 }
 
 .project-view-footer {
-  display: flex;
   height: 20rem;
   border: solid red;
   margin-top: 20rem;

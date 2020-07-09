@@ -43,6 +43,7 @@ const ProjectsAPI = (app) => {
                     res.json(json_not_found);
                 }
                 else {
+                    obj.level = userComp.level;
                     userComp.addSubComp(obj);
                     res.json(json_success);
                 }
@@ -296,14 +297,6 @@ const ProjectsAPI = (app) => {
             res.json(json);
             return;
         }
-        else {
-            if (isCompleted === 'true') {
-                isCompleted = true;
-            }
-            else {
-                isCompleted = false;
-            }
-        }
 
         project = new Project(projectName, '');
         userProject = defUser.getProject(project);
@@ -326,7 +319,7 @@ const ProjectsAPI = (app) => {
                     json['message'] = `step ${name} not found`;
                 }
                 else {
-                    userStep.isComplete = req.body.isCompleted;
+                    userStep.isComplete = isCompleted;
                     json = userProject.jsonify();
                     json['status'] = 200;
                 }

@@ -39,20 +39,11 @@ class Project {
     }
 
     calcCompletionRate() {
-        let numCompleted = 0
-        let totalNum = 0;
-        this.comps.forEach(function(comp) {
-            comp.steps.forEach(function(step) {
-                totalNum++;
-                if (step.isComplete) {
-                    numCompleted++;
-                }
-            });
-        });
-        if (totalNum === 0) {
-            return 0;
-        }
-        return numCompleted/totalNum;
+        var numer = 0;
+        this.comps.forEach(function(comp) {numer += comp.calcCompletionRate()});
+
+        var denom = this.comps.length;
+        return denom === 0 ? 0 : numer/denom;        
     }
 
     jsonify() {
