@@ -43,7 +43,9 @@ class LandingPage extends Component {
                         </UncontrolledDropdown>
                     </div>
                     <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
-                    <h5> Project Crimson</h5>
+                    <div className="logo">
+                        <h5 id="text"> Project Crimson</h5>
+                    </div>
                 </div>
                 <div className="project-list-header">
                     <p>Your Portfolio</p>
