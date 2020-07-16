@@ -2,9 +2,13 @@
 // then call the imported function in collectImports
 
 // api routes
-import userAPI from './api/userProjects.js'
+import ProjectsAPI from './api/ProjectsAPI.js';
+import SearchAPI from './api/SearchAPI.js';
 
-const collectImports = (app) => userAPI(app);
+const collectImports = (app) => {
+    ProjectsAPI(app);
+    SearchAPI(app);
+}
 
 
 export default collectImports;

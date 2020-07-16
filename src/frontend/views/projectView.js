@@ -1,10 +1,27 @@
 import React, { Component } from 'react'
-import { ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { 
+    ListGroup,
+    ListGroupItem,
+    ListGroupItemHeading,
+    UncontrolledButtonDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem,
+    UncontrolledDropdown,
+    Jumbotron,
+    Container,
+    Progress,
+    Button,
+} from 'reactstrap';
 
 import expandArrow from './icons/expandArrowMenu.png'
 import dotMenu from './icons/threeDotMenu.png'
 import './styles/projectViewStyles.css'
+import menuIcon from './icons/threeLineMenu.png';
 
+
+// Defines ProjectView component
+// Displays selected project and associated components
 class ProjectView extends Component {
     constructor(props) {
         super(props);
@@ -12,12 +29,40 @@ class ProjectView extends Component {
         this.state = {
             project: {},
             isLoading: true,
+            isEditing: false,
+            projectName: "",
+            isCalculating: false,
         }
-        this.callGetProjectAPI = this.callGetProjectAPI.bind(this);
+
+    }
+
+    debug = (res) => {
+        console.log('response: ');
+        console.log(res);
+        console.log('state: ');
+        console.log(this.state.project);
+    }
+    
+    refreshProgressBar = (compName, step, isComplete) => {
+        this.setState({ isCalculating: true });
+        var body = {
+            'projectName': this.state.project.name,
+            'compName': compName,
+            'name': step.name,
+            'isCompleted': isComplete
+        };
+
+        fetch('http://localhost:9000/updatePercentComplete', {
+            headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify(body)
+        }).then(res => res.json()).then(res => res.status === 200 ?
+            this.setState({ project: res, isCalculating: false }, this.debug(res)) : console.log(res.message));
+
     }
 
     callGetProjectAPI() {
-        var body = { "name": this.props.match.url.slice(1) }
+        var body = { "name": this.state.projectName.length ? this.state.projectName : this.props.match.url.slice(1) }
 
         fetch('http://localhost:9000/getProject', {
             headers: { 'Content-Type': 'application/json' },
@@ -26,10 +71,40 @@ class ProjectView extends Component {
         })
             .then(res => res.json())
             .then(res => res.status === 200 ?
-                this.setState({ project: res, isLoading: false }) : console.log(res.message));
+                this.setState({ project: res, isLoading: false , projectName: res.name}) : console.log(res.message));
     }
 
+
     refreshCompList = (res) => this.callGetProjectAPI();
+
+    toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing }, 
+        () => this.state.isEditing && this.nameInput.focus());
+
+    modifyProjectName = async () => {
+        let body = {
+            "name": this.state.projectName, 
+            "desc": this.state.project.desc,
+            "projectName": this.state.project.name
+        };
+
+
+        await fetch('http://localhost:9000/modifyProject', {
+            headers: { 'Content-type': 'application/json' },
+            method: 'POST',
+            body: JSON.stringify(body),
+        }).then(res => res.json()).then(res => this.refreshCompList(res));
+    }
+    
+
+    handleNameChange = (e) => this.setState({projectName: e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) });
+
+    checkKey = (e) => {
+        if(e.key === 'Enter') {
+            this.modifyProjectName();
+            this.toggleIsEditing();
+            window.history.replaceState("this", 'New Project title', `/${this.state.projectName}`); //this will need to be reworked
+        }
+    }
 
     componentDidMount() {
         this.callGetProjectAPI();
@@ -38,18 +113,70 @@ class ProjectView extends Component {
     render() {
         return (
             <div className='project-view-main'>
+                <div className='project-view-header'>
+                    <div className="drop-down">
+                        <UncontrolledDropdown>
+                            <DropdownToggle className="drop-down-button">
+                                <img src={menuIcon} alt="menu" />
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem><a href="#marketplace">Marketplace</a></DropdownItem>
+                                <DropdownItem><a href="#forum">Forum</a></DropdownItem>
+                                <DropdownItem><a href="#profile">My Profile</a></DropdownItem>
+                                <DropdownItem><a href="#porn">Maxim's phat a$$</a></DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledDropdown>
+                    </div>
+                    <input className="search-bar" type="text" placeholder="Search your projects.." title="Search your projects"></input>
+                    <h5 className='logo'> Project Crimson</h5>
+                </div>
+                <div className='project-view-banner'>
+                    <Jumbotron fluid className='project-view-banner-jumbotron'>
+                        <Container fluid>
+                            <h1>Welcome to Project Control</h1>
+                            <p>Here you can make changes to and grow your project!</p>
+                        </Container>
+                    </Jumbotron>
+                </div>
                 {!this.state.isLoading &&
-                    <div>
-                        <h1>Now viewing project '{this.state.project.name}'</h1>
+                    <div className='project-view-content' >
+                    {!this.state.isEditing ? 
+                        <React.Fragment>
+                        <Button id='project-title-button' className='project-title' onClick={this.toggleIsEditing}>
+                            <h1>{this.state.projectName}</h1>
+                        </Button>
+                        </React.Fragment> :
+                        <input className="project-title-input"
+                            type="text"
+                            defaultValue={this.state.projectName}
+                            placeholder="Project Name"
+                            onKeyDown={this.checkKey}
+                            onChange={this.handleNameChange}
+                            ref={input => this.nameInput = input}
+                            />}
+                        <div className='project-progress'>
+                            <Progress
+                                animated
+                                value={this.state.project.pComplete < 0.08 ? Math.round(this.state.project.pComplete * 100) + 8 : Math.round(this.state.project.pComplete * 100)}
+                                color="success">{Math.round(this.state.project.pComplete * 100)}%
+                            </Progress>
+                        </div>
                         <h3>Components:</h3>
-                        <ComponentListView project={this.state.project} onChange={this.refreshCompList} />
+                        <ComponentListView
+                            project={this.state.project}
+                            isCalculating={this.state.isCalculating}
+                            onCompletionChange={this.refreshProgressBar}
+                            onChange={this.refreshCompList} />
                     </div>
                 }
+                <div className='project-view-footer'/> {/* empty div added to style the bottom of the page */}
             </div>
         );
     }
-}
+} 
 
+//Lays out structure of displaying a project's components 
+//Displays empty component when adding new component 
 class ComponentListView extends Component {
     constructor(props) {
         super(props);
@@ -57,18 +184,17 @@ class ComponentListView extends Component {
         this.state = {
             isAdding: false,
         }
-        this.onChange = this.onChange.bind(this);
     }
 
     toggleIsAdding = () => this.setState({ isAdding: !this.state.isAdding });
 
-    onChange(res) {
+    onChange = (res) => {
         this.toggleIsAdding();
         this.props.onChange(res);
     }
 
     render() {
-        var compList = this.props.project.components;
+        let compList = this.props.project.components;
         return (
             <ListGroup>
                 {compList.length === 0 ? <p>No components added, click add component to add a component</p> :
@@ -76,7 +202,9 @@ class ComponentListView extends Component {
                         key={comp.name}
                         project={this.props.project}
                         comp={comp}
-                        onChange={this.props.onChange} />)}
+                        isCalculating={this.props.isCalculating}
+                        onCompletionChange={(compName, step, isComplete) => this.props.onCompletionChange(compName, step, isComplete)}
+                    onChange={this.props.onChange} />)}
                 {this.state.isAdding && <ComponentView
                     project={this.props.project}
                     comp={undefined}
@@ -88,6 +216,8 @@ class ComponentListView extends Component {
     }
 }
 
+//Displays components, subcomponents, and steps 
+//handles adding, deleting, and modifing components and sub components 
 class ComponentView extends Component {
     constructor(props) {
         super(props);
@@ -99,20 +229,12 @@ class ComponentView extends Component {
             desc: this.props.comp ? this.props.comp.description : "",
             isValid: true,
             validMsg: "valid",
+            isCalculating: this.props.isCalculating,
             subComps: this.props.comp ? this.props.comp.subComponents : [],
             isAddingSubComp: false,
             steps: this.props.comp ? this.props.comp.steps : [],
             isAddingStep: false,
         };
-
-        this.DeleteComponent = this.DeleteComponent.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-
-        this.callGetStepsAPI = this.callGetStepsAPI.bind(this);
-        this.refreshStepList = this.refreshStepList.bind(this);
-
-        this.callGetSubCompsAPI = this.callGetSubCompsAPI.bind(this);
-        this.refreshSubCompList = this.refreshSubCompList.bind(this);
     }
 
     toggleIsShowing = () => this.setState({ isShowing: !this.state.isShowing });
@@ -138,22 +260,23 @@ class ComponentView extends Component {
         const res = await fetch('http://localhost:9000/getComponent', {
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
-            body: JSON.stringify({ 'name': this.props.project.name, 'compName': this.state.name }) });
+            body: JSON.stringify({ 'name': this.props.project.name, 'compName': this.state.name })
+        });
 
         const json = await res.json();
-        
-        if (json.status === 200) {
+
+        if (json.status === 200 && (!this.props.comp || this.props.comp.name !== this.state.name)) {
             this.setState({ isValid: false, validMsg: "Component names must be unique" });
             return;
         }
         this.handleSubmit();
     }
     
-    handleSubmit() {
-        var name = this.state.name;
-        var desc = this.state.desc;
+    handleSubmit = () => {
+        let name = this.state.name;
+        let desc = this.state.desc;
 
-        var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name };
+        let body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name };
 
         if (this.state.isValid) {
             if (!this.props.comp) {
@@ -180,8 +303,10 @@ class ComponentView extends Component {
 
     handleCancel = () => this.props.comp ? this.toggleIsEditing() : this.props.onChange();
 
-    DeleteComponent(comp) {
-        var body = { "name": comp.name, "desc": comp.desc, "projectName": this.props.project.name };
+    checkKey = (e) => e.key === 'Enter' && this.checkName();
+
+    DeleteComponent = (comp) => {
+        let body = { "name": comp.name, "desc": comp.desc, "projectName": this.props.project.name };
 
         if (this.props.parent) {
             body['compName'] = this.props.parent.name;
@@ -196,7 +321,7 @@ class ComponentView extends Component {
 
     }
 
-    callGetSubCompsAPI() {
+    callGetSubCompsAPI = () => {
         var body = { 'name': this.props.project.name, 'compName': this.props.comp.name };
 
         fetch('http://localhost:9000/getSubComponents', {
@@ -207,13 +332,13 @@ class ComponentView extends Component {
             this.setState({ subComps: res.subComponents }) : console.log(res.message));
     }
 
-    refreshSubCompList(res) {
+    refreshSubCompList = (res) => {
         this.setState({ isAddingSubComp: false });
         this.callGetSubCompsAPI();
     }
 
-    callGetStepsAPI() {
-        var body = { 'name': this.props.project.name, 'compName': this.props.comp.name };
+    callGetStepsAPI = () => {
+        let body = { 'name': this.props.project.name, 'compName': this.props.comp.name };
 
         fetch('http://localhost:9000/getSteps', {
             headers: { 'Content-Type': 'application/json' },
@@ -223,13 +348,15 @@ class ComponentView extends Component {
             this.setState({ steps: res.steps }) : console.log(res.message));
     }
 
-    refreshStepList(res) {
+    refreshStepList = (res) => {
         this.setState({ isAddingStep: false });
         this.callGetStepsAPI();
     }
 
+    handleCompletionChange = (name, step, isComplete) => this.props.onCompletionChange(name, step, isComplete);
+
     render() {
-        var comp = this.props.comp;
+        let comp = this.props.comp;
         if (comp) {
             this.props.comp.steps = this.state.steps;
         }
@@ -239,11 +366,19 @@ class ComponentView extends Component {
                     onClick={this.toggleIsShowing}>
                     <img src={expandArrow} alt="expand" width="10px" height="10px" />
                 </button>}
-                {this.state.isEditing ? <input
-                    type="text"
-                    defaultValue={comp ? comp.name : ''}
-                    placeholder="Name"
-                    onChange={this.handleNameChange} /> : comp.name}
+                {!this.state.isEditing ?  
+                        <Button  className='component-title-button' onClick={this.toggleIsEditing}>
+                            <h1>{this.state.name}</h1>
+                        </Button> :
+                        <input
+                        className="component-title-input"
+                        type="text"
+                        defaultValue={this.state.name}
+                        placeholder="Component Name"
+                        onKeyDown={this.checkKey}
+                        onChange={this.handleNameChange} 
+                        />
+                        }
                 {!this.state.isEditing && <div className="comp-options">
                     <UncontrolledButtonDropdown direction="left">
                         <DropdownToggle>
@@ -260,13 +395,19 @@ class ComponentView extends Component {
                     </UncontrolledButtonDropdown>
                 </div>}
             </ListGroupItemHeading>
-            <ListGroupItemText>
+            <div className='comp-details'>
                 Description: {this.state.isEditing ? <input
                     type="text"
-                    defaultValue={comp ? comp.description : ''}
+                    defaultValue={this.state.desc}
                     placeholder="Description"
-                    onChange={this.handleDescChange} /> : comp.description}
-            </ListGroupItemText>
+                    onChange={this.handleDescChange}
+                    onKeyDown={this.checkKey} /> : comp.description}
+                {!this.state.isEditing && <Progress
+                    animated
+                    value={comp.pComplete < 0.08 ? Math.round(comp.pComplete * 100) + 8 : Math.round(comp.pComplete * 100)}
+                    color="success">{Math.round(comp.pComplete * 100)}%
+                </Progress>}
+            </div>
             {this.state.isEditing && <button className='done-editing' onClick={this.checkName}>Done</button>}
             {this.state.isEditing && <button className='cancel-editing' onClick={this.handleCancel}>Cancel</button>}
             {!this.state.isValid && <p>{this.state.validMsg}</p>}
@@ -274,12 +415,14 @@ class ComponentView extends Component {
                 <h6>Sub-Components:</h6>
                 <ListGroup>
                     {this.state.subComps.length === 0 ? <p>No Sub-Components added, click add Sub-Component to add a Sub-Component</p> :
-                        this.state.subComps.map(subComp => <ComponentView
+                        comp.subComponents.map(subComp => <ComponentView
                             key={subComp.name}
                             project={this.props.project}
                             comp={subComp}
                             parent={comp}
-                            onChange={this.refreshSubCompList} />)}
+                            isCalculating={this.props.isCalculating}
+                            onChange={this.refreshSubCompList}
+                            onCompletionChange={(compName, step, isComplete) => this.handleCompletionChange(compName, step, isComplete)} />)}
                     {this.state.isAddingSubComp && <ComponentView
                         project={this.props.project}
                         comp={undefined}
@@ -296,6 +439,8 @@ class ComponentView extends Component {
                             step={step}
                             comp={comp}
                             project={this.props.project}
+                            isCalculating={this.props.isCalculating}
+                            onCompletionChange={this.handleCompletionChange}
                             onChange={this.refreshStepList} />)}
                     {this.state.isAddingStep && <StepView
                         project={this.props.project}
@@ -312,6 +457,8 @@ class ComponentView extends Component {
 
 }
 
+//handles adding, editing, and deleting steps
+//displays the step section 
 class StepView extends Component {
     constructor(props) {
         super(props);
@@ -321,10 +468,9 @@ class StepView extends Component {
             isEditing: false || this.props.isEditing,
             name: this.props.step ? this.props.step.name : "",
             desc: this.props.step ? this.props.step.description : "",
-            isValid: true
+            isValid: true,
+            isCompleted: this.props.step ? this.props.step.completed : false
         };
-        this.DeleteStep = this.DeleteStep.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     toggleIsEditing = () => this.setState({ isEditing: !this.state.isEditing });
@@ -333,9 +479,9 @@ class StepView extends Component {
 
     handleDescChange = (e) => this.setState({ desc: e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1) });
 
-    handleSubmit() {
-        var name = this.state.name;
-        var desc = this.state.desc;
+    handleSubmit = () => {
+        let name = this.state.name
+        let desc = this.state.desc;
 
         if (name.length === 0 || desc.length === 0 ||
             (this.props.comp.steps.map(step => step.name).includes(name) &&
@@ -347,7 +493,7 @@ class StepView extends Component {
             this.setState({ isValid: true });
         }
 
-        var body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name };
+        let body = { 'name': name, 'desc': desc, 'projectName': this.props.project.name, 'compName': this.props.comp.name };
 
         if (!this.props.step) {
             fetch('http://localhost:9000/addStep', {
@@ -370,8 +516,8 @@ class StepView extends Component {
 
     handleCancel = () => this.props.step ? this.toggleIsEditing() : this.props.onChange();
 
-    DeleteStep(step) {
-        var body = {
+    DeleteStep = (step) => {
+        let body = {
             "name": step.name, "desc": step.desc,
             "projectName": this.props.project.name, "compName": this.props.comp.name
         };
@@ -386,8 +532,13 @@ class StepView extends Component {
 
     refreshStepList = (res) => this.props.onChange(res);
 
+    handleCompletionChange = (name, step, isCompleted) => {
+        this.setState({ isCompleted: !this.state.isCompleted });
+        this.props.onCompletionChange(name, step, !isCompleted);
+    }
+
     render() {
-        var step = this.props.step;
+        let step = this.props.step;
         return (<ListGroupItem>
             <ListGroupItemHeading>
                 {this.state.isEditing ? <input
@@ -411,13 +562,21 @@ class StepView extends Component {
                     </UncontrolledButtonDropdown>}
                 </div>
             </ListGroupItemHeading>
-            <ListGroupItemText>
+            <div className='step-details'>
                 Description: {this.state.isEditing ? <input
                     type="text"
                     defaultValue={step ? step.description : ''}
                     placeholder='Description'
                     onChange={this.handleDescChange} /> : step.description}
-            </ListGroupItemText>
+                {!this.state.isEditing && (!this.props.isCalculating &&
+                    <input
+                        type='checkbox'
+                        name={this.state.isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+                        checked={this.state.isCompleted}
+                        onChange={() => this.handleCompletionChange(this.props.comp.name, step, this.state.isCompleted)}
+                        className='is-step-completed'
+                    /> )}
+            </div>
             {this.state.isEditing && <button className='done-editing' onClick={this.handleSubmit}>Done</button>}
             {this.state.isEditing && <button className='cancel-editing' onClick={this.handleCancel}>Cancel</button>}
             {!this.state.isValid && <p>Invalid input, you cannot have two components of the same name or empty fields for name or description</p>}

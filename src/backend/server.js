@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
-collectImports(app)
+collectImports(app);
 
 app.get('/', (req, res) => {
   res.send('Welcome to the backend, this is PORT ' + port);

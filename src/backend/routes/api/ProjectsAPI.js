@@ -3,13 +3,12 @@ import Project from '../../userClasses/Project.mjs'
 import Comp from '../../userClasses/Comp.mjs'
 import Step from '../../userClasses/Step.mjs'
 
-
-var defUser = new User("default guy", "defaultguy@gmail.com");
-
 var json_success = { "status": 200 };
 var json_not_found = { "status": 404, 'message': 'not found' };
 
-const userAPI = (app) => {
+export let defUser = new User("default guy", "defaultguy@gmail.com");
+
+const ProjectsAPI = (app) => {
     app.post('/addProject', function (req, res) {
         var name = req.body.name;
         var desc = req.body.desc;
@@ -44,6 +43,7 @@ const userAPI = (app) => {
                     res.json(json_not_found);
                 }
                 else {
+                    obj.level = userComp.level;
                     userComp.addSubComp(obj);
                     res.json(json_success);
                 }
@@ -277,6 +277,57 @@ const userAPI = (app) => {
         }
     });
 
+    app.post('/updatePercentComplete', function (req, res) {
+        let json = {};
+        let project;
+        let userProject;
+        let comp;
+        let userComp;
+        let step;
+        let userStep;
+
+        let name = req.body.name;
+        let projectName = req.body.projectName;
+        let compName = req.body.compName;
+        let isCompleted = req.body.isCompleted;
+
+        if (!(typeof isCompleted === 'boolean')) {
+            json['status'] = 400;
+            json['message'] = 'request field must have a boolean value "isCompleted"'
+            res.json(json);
+            return;
+        }
+
+        project = new Project(projectName, '');
+        userProject = defUser.getProject(project);
+        if (!userProject) {
+            json['status'] = 404;
+            json['message'] = `project ${projectName} not found`;
+        }
+        else {
+            comp = new Comp(compName, '');
+            userComp = userProject.getComp(comp);
+            if (!userComp) {
+                json['status'] = 404;
+                json['message'] = `component ${compName} not found`;
+            }
+            else {
+                step = new Step(name, '');
+                userStep = userComp.getStep(step)
+                if (!userStep) {
+                    json['status'] = 404;
+                    json['message'] = `step ${name} not found`;
+                }
+                else {
+                    userStep.isComplete = isCompleted;
+                    json = userProject.jsonify();
+                    json['status'] = 200;
+                }
+            }
+        }
+        res.json(json);
+    });
+
     app.get('/getProjects', function (req, res) {
         var json = defUser.getAllProjectsJSON();
         json["status"] = 200;
@@ -284,4 +335,4 @@ const userAPI = (app) => {
     });
 }
 
-export default userAPI;
+export default ProjectsAPI;
