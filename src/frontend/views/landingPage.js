@@ -165,7 +165,7 @@ class SearchBar extends Component {
                         {filteredSuggs.map(sugg => {
                             return (
                                 <div className='search-result'>
-                                    <Link to={`/${sugg.name}`}>
+                                    <Link to={`/u/defaultUser/${sugg.name}`}> {/* Requires attention!!!!!! */}
                                         <p key={sugg.name} onClick={onClick}>
                                             {sugg.name}
                                         </p>
@@ -315,7 +315,7 @@ class ProjectView extends Component {
                         defaultValue={this.state.name}
                         placeholder='Name'
                         onChange={this.handleNameChange} /> :
-                        <Link to={`/${project.name}`}>
+                        <Link to={`/u/defaultUser/${project.name}`}> {/* Requires attention !!!!!!*/}
                             <CardTitle>{project.name}</CardTitle>
                         </Link>}
                 </CardHeader>

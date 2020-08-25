@@ -62,7 +62,8 @@ class ProjectView extends Component {
     }
 
     callGetProjectAPI() {
-        var body = { "name": this.state.projectName.length ? this.state.projectName : this.props.match.url.slice(1) }
+        let projectName = this.props.match.url.split('/').pop().replace(/%20/g, ' ');
+        var body = { "name": this.state.projectName.length ? this.state.projectName : projectName }
 
         fetch('http://localhost:9000/getProject', {
             headers: { 'Content-Type': 'application/json' },
