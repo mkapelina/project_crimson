@@ -24,9 +24,9 @@ import {
     CardFooter
 } from "reactstrap";
 
-import menuIcon from './icons/threeLineMenu.png';
-import threeDotIcon from './icons/verticalThreeDotsMenu.png';
-import "./styles/landingPageStyles.css";
+import menuIcon from '../icons/threeLineMenu.png';
+import threeDotIcon from '../icons/verticalThreeDotsMenu.png';
+import "./LandingPage.css";
 
 class LandingPage extends Component {
     constructor(props) {

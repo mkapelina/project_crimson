@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import { Link } from 'react-router-dom';
-import { Navbar, NavbarBrand, Jumbotron, Container, CardGroup, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText } from "reactstrap";
+import { Navbar, NavbarBrand, Jumbotron, CardGroup, Card, CardImg, CardBody, CardTitle, CardSubtitle, CardText } from "reactstrap";
 
-import './styles/MainPageStyles.css';
-import CoDesignLogo from './icons/CoDesignLogo.png';
-import codeImage from './images/CodeDefaultImg.png';
-import PVScreenshot from './images/ProjectViewScreenshot7-15.png';
-import LPScreenshot from './images/UserLandingPageScreenshot7-15.png';
+import './MainPage.css';
+import CoDesignLogo from '../icons/CoDesignLogo.png';
+import codeImage from '../images/CodeDefaultImg.png';
+import PVScreenshot from '../images/ProjectViewScreenshot7-15.png';
+import LPScreenshot from '../images/UserLandingPageScreenshot7-15.png';
+import LoginPopup from './LoginPopup';
+import SignUpPopup from './SignUpPopup'
 
 class MainPage extends Component {
     render() {
@@ -35,12 +37,8 @@ const MainHeader = (props) => {
             </NavbarBrand>
             <MainLogo />
             <div className='sign-in-wrapper'>
-                <Link to='/signup'>
-                    <button className='signup-button' type='button'>Sign Up</button>
-                </Link>
-                <Link to='/login'>
-                    <button className='login-button' type='button'>Log In</button>
-                </Link>
+                <SignUpPopup />
+                <LoginPopup />
             </div>
         </Navbar>
     )

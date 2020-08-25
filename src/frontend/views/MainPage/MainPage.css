@@ -41,12 +41,16 @@
     font-size: 300%;
     color: #b3bdfd;
     text-shadow: 1px 1px 1px #a62446;
+    pointer-events: none;
+    user-select: none;
 }
 
 .rotating-message {
     margin: 0;
     text-align: left;
     text-shadow: 1px 1px 1px #a62446;
+    pointer-events: none;
+    user-select: none;
 }
 
 .rotating-message span {
@@ -106,30 +110,8 @@
     100% { opacity: 0; }
 }
 
-.signup-button {
-    height: 3rem;
-    width: 6rem;
-    border: 1px solid gray;
-    background-color: #b3bdfd;
-    padding: 2px;
-    border-radius: 4px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    font-size: 150%;
-    color: #4953af!important;
-}
-
-.login-button {
-    height: 3rem;
-    width: 6rem;
-    border: 1px solid gray;
-    background-color: #b3bdfd;
-    padding: 2px;
-    border-radius: 4px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    font-size: 150%;
-    color: #4953af!important;
+.sign-in-wrapper {
+    display: flex;
 }
 
 .jumboheader {

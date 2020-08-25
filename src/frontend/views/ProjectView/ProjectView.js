@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { 
     ListGroup,
     ListGroupItem,
@@ -14,10 +14,10 @@ import {
     Button,
 } from 'reactstrap';
 
-import expandArrow from './icons/expandArrowMenu.png'
-import dotMenu from './icons/threeDotMenu.png'
-import './styles/projectViewStyles.css'
-import menuIcon from './icons/threeLineMenu.png';
+import expandArrow from '../icons/expandArrowMenu.png';
+import dotMenu from '../icons/threeDotMenu.png';
+import menuIcon from '../icons/threeLineMenu.png';
+import './ProjectView.css';
 
 
 // Defines ProjectView component
